@@ -1,0 +1,12 @@
+name: shinyapp
+title: shinyapp
+username:
+account: segmentation
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 289344
+bundleId: 1243132
+url: https://coolapps.shinyapps.io/shinyapp/
+when: 1519757898.04093
+asMultiple: FALSE
+asStatic: FALSE
