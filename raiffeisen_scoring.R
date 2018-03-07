@@ -73,9 +73,8 @@ computeDist <- function(x1, y1, x2, y2)
       bottom=head(bottom,1),
       
       is_atm=head(is_atm,1),
-      top.city=head(top.city,1),
+      top_city=head(top_city,1),
       top_city_center_dist=head(top_city_center_dist,1),
-      city_pop=head(city_pop,1),
       pos_atm_orig_lat=head(pos_atm_orig_lat,1),
       pos_atm_orig_lon=head(pos_atm_orig_lon,1)
       
@@ -128,7 +127,7 @@ computeDist <- function(x1, y1, x2, y2)
   df$pos_weekend_amount_rate <- round(df$pos_weekend_amount / df$cust_weekend_amount, 3)
   df$pos_weekday_amount_rate <- round(df$pos_weekday_amount / df$cust_weekday_amount, 3)
   
-  write.table(df, "df_agregated.csv", sep=";", row.names=F, col.names = T)
+  # write.table(df, "df_agregated.csv", sep=";", row.names=F, col.names = T)
   
 
   

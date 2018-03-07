@@ -4,6 +4,14 @@ result = fread("result.csv", sep=";")
 
 
 
+library(xgboost)
+
+
+
+
+
+
+
 predictors <- colnames(result)[substring(colnames(result),1,3) == "top"]
 predictors <- predictors[5:length(predictors)]
 predictors <- c(predictors, c("is_moscow","is_piter","is_other","center.dist","size_x","size_y",
