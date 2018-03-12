@@ -5,18 +5,19 @@
   
   # List of customers to use (all train + test)
   
-  raw_customers <- unique(df$customer_id)[1:1000]
+  raw_customers <- unique(df$customer_id)
   
   # Import libraries
 
     library(fpc)
+    library(cluster)
     library(doMC)
   
   
   # Register parallel execution
   
-    registerDoMC(20)
-    n_threads = 20
+    registerDoMC(16)
+    n_threads = 16
   
   
   # Result dataset
@@ -50,7 +51,7 @@
     
       if (thread == n_threads)
         to_custid = length(raw_customers)
-      else
+      if (thread != n_threads)
         to_custid = min(from_custid + stripe - 1, length(raw_customers))
     
     
@@ -68,10 +69,15 @@
         # print(paste("pid=",thread, " processing customer ",c,sep=""))
   
         # Print every 100 customers processed
-        if (c%%100==0)
+        if (c%%200==0)
         {
   
           Sys.sleep(20)
+        }
+        
+        if (thread == 1 & c%%10==0)
+        {
+          
           print(paste("pid ",thread," ","processing customer ",c,"\r",sep=""))
         }
     
@@ -107,7 +113,7 @@
   
   p_time
     
-
+  write.table(result, "raiff_attrs.csv", sep=";", header=F)
 
 
 

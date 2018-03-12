@@ -1,10 +1,10 @@
 library(data.table)
 
-result = fread("result.csv", sep=";")
+# result = fread("result.csv", sep=";")
 
 
 
-library(xgboost)
+# library(xgboost)
 
 
 
@@ -35,7 +35,6 @@ predictors <- c(predictors, c("is_moscow","is_piter","is_other","center.dist","s
                               "cluster_rank_by_separation",
                               "cluster_dist",
                               "cluster_diss_to_max_diss",
-                              "city_pop",
                               "diameter",
                               "separation",
                               "cluster_cnt",
@@ -262,12 +261,13 @@ data.matrix(result_train[,c(predictors),with=F])
                        eval_metric = 'Accuracy',
                        border_count = 32,
                        depth = 10,
-                       use_best_model = TRUE,
+                       use_best_model = FALSE,
                        learning_rate = 0.03)
     
     catboost_model <- catboost.train(learn_pool = catboost_train_home, params = fit_params)
     
     result_test$score_home <- catboost.predict(catboost_model, catboost_test_home, prediction_type = "Probability")
+    result_train$score_home <- catboost.predict(catboost_model, catboost_train_home, prediction_type = "Probability")
     
     # fi_home = data.frame(catboost_model$feature_importances)
     # fi$var = row.names(fi)
@@ -314,6 +314,7 @@ data.matrix(result_train[,c(predictors),with=F])
   catboost_model <- catboost.train(learn_pool=catboost_train_work, params=fit_params)
   
   result_test$score_work <- catboost.predict(catboost_model, catboost_test_work, prediction_type = "Probability")
+  result_train$score_work <- catboost.predict(catboost_model, catboost_train_work, prediction_type = "Probability")
   
   # Score Home on TEST
   # result_test$score_work <- predict(rf_model_work, result_test[,c(predictors),with=F], ntree=100)

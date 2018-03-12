@@ -5,6 +5,8 @@
 process_customer <- function(current_transactions)
 {
   
+  require(fpc)
+  
   current_transactions$id <- as.numeric(row.names(current_transactions))
   
   # Compute distance matrix
@@ -14,7 +16,7 @@ process_customer <- function(current_transactions)
   # 
   for (i in c(1,3,5,7,9))
   {
-    for (j in c("any","6011","5411","5814","5812","5499"))
+    for (j in c("any","6011","5411","5814","5812","5499","5912","5541","4111","5691","5977","5921","5999","5331","5261","5661"))
     {
       # print(paste("processing ",i,"_",j,"\r",sep=""))
       for (z in current_transactions$id)
