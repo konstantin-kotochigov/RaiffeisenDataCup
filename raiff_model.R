@@ -1,15 +1,7 @@
 library(data.table)
+library(catboost)
 
 # result = fread("result.csv", sep=";")
-
-
-
-# library(xgboost)
-
-
-
-
-
 
 
 predictors <- colnames(result)[substring(colnames(result),1,3) == "top"]
@@ -42,8 +34,6 @@ predictors <- c(predictors, c("is_moscow","is_piter","is_other","center.dist","s
                               "av_diss",
                               "mcc",
                               "is_atm",
-                              "size.x",
-                              "size.y",
                               "cluster_mean_lat",
                               "cluster_mean_lon"
                              
@@ -61,9 +51,14 @@ result$mcc <-factor(result$mcc)
   result_train = result[result$df=="train",]
   result_test = result[result$df == "test",]
   
+  
+  
   # Work dataset is half size of home dataset
   result_train_home = result_train
   result_train_work = result_train[!is.na(result_train$work_lat) & !is.na(result_train$work_lon),]
+  
+  # ToDO: Delete!
+  result_train_work$work_dist <- sqrt((result_train_work$pos_atm_orig_lat - result_train_work$work_lat)^2 + (result_train_work$pos_atm_orig_lon - result_train_work$work_lon)^2)
   
   # Correct target variables
   result_train_home$target_home <- factor(ifelse(result_train_home$target_home == 1 | result_train_home$home_dist <= 0.02, 1, 0))
@@ -72,8 +67,8 @@ result$mcc <-factor(result$mcc)
   # Divide Home & Work datasets into train/validate by customers
   train_home_customers <- unique(result_train_home$customer_id)
   train_work_customers <- unique(result_train_work$customer_id)
-  train_train_home_customers = sample(train_home_customers, round(0.75*length(train_home_customers)), FALSE)
-  train_train_work_customers = sample(train_work_customers, round(0.75*length(train_work_customers)), FALSE)
+  train_train_home_customers = sample(train_home_customers, round(0.8*length(train_home_customers)), FALSE)
+  train_train_work_customers = sample(train_work_customers, round(0.8*length(train_work_customers)), FALSE)
   train_validate_home_customers = setdiff(train_home_customers, train_train_home_customers)
   train_validate_work_customers = setdiff(train_work_customers, train_train_work_customers)
   
@@ -85,63 +80,64 @@ result$mcc <-factor(result$mcc)
   
   print("Stats for datasets...")
   print(paste(
-    "Train=", nrow(result_train),
-    " Test=", nrow(result_test),
-    " Train(Home)=", nrow(result_train_home),
-    " Train(Work)=", nrow(result_train_work),
-    " Train-Train(Home)", nrow(result_train_train_home),
-    " Train-Validate(Home)", nrow(result_train_validate_home),
-    " Train-Train(Work)=", nrow(result_train_train_work),
-    " Train-Validate(Work)=",nrow(result_train_validate_work),sep=""))
+    "Train=", length(unique(result_train$customer_id)),
+    " Test=", length(unique(result_test$customer_id)),
+    " Train(Home)=", length(unique(result_train_home$customer_id)),
+    " Train(Work)=", length(unique(result_train_work$customer_id)),
+    " Train-Train(Home)", length(unique(result_train_train_home$customer_id)),
+    " Train-Validate(Home)", length(unique(result_train_validate_home$customer_id)),
+    " Train-Train(Work)=", length(unique(result_train_train_work$customer_id)),
+    " Train-Validate(Work)=",length(unique(result_train_validate_work$customer_id)),sep=""))
   
 
 
 
 
 # Define catboost datasets
+  
+  mcc_attribute_num <- which(predictors=="mcc")
+  categorical_attrs = mcc_attribute_num
 
   catboost_train_home <- catboost.load_pool(data=result_train_home[,predictors,with=F], 
                                             label = as.numeric(result_train_home$target_home)-1,
                                             feature_names = as.list(predictors),
-                                            cat_features=c(62),
+                                            cat_features=categorical_attrs,
                                             thread_count = -1)
-  catboost_test_home <- catboost.load_pool(data=result_test[,predictors,with=F], 
-                                           label = as.numeric(result_test$target_home)-1,
+  catboost_test <- catboost.load_pool(data=result_test[,predictors,with=F], 
                                            feature_names = as.list(predictors),
-                                           cat_features=c(62),
+                                           cat_features=categorical_attrs,
                                            thread_count = -1)
   
   catboost_train_work <- catboost.load_pool(data=result_train_work[,predictors,with=F], 
                                             label = as.numeric(result_train_work$target_work)-1,
                                             feature_names = as.list(predictors),
-                                            cat_features=c(62),
+                                            cat_features=categorical_attrs,
                                             thread_count = -1)
-  catboost_test_work <- catboost.load_pool(data=result_test[,predictors,with=F], 
-                                           label = NULL,
-                                           feature_names = as.list(predictors),
-                                           cat_features=c(62),
-                                           thread_count = -1)
+  # catboost_test_work <- catboost.load_pool(data=result_test[,predictors,with=F],
+  #                                          feature_names = as.list(predictors),
+  #                                          cat_features=categorical_attrs,
+  #                                          thread_count = -1)
   
   catboost_train_train_home <- catboost.load_pool(data=result_train_train_home[,predictors,with=F], 
                                             label = as.numeric(result_train_train_home$target_home)-1,
                                             feature_names = as.list(predictors),
-                                            cat_features=c(62),
+                                            cat_features=categorical_attrs,
                                             thread_count = -1)
   catboost_train_validate_home <- catboost.load_pool(data=result_train_validate_home[,predictors,with=F], 
                                            label = as.numeric(result_train_validate_home$target_home)-1,
                                            feature_names = as.list(predictors),
-                                           cat_features=c(62),
+                                           cat_features=categorical_attrs,
                                            thread_count = -1)
   
   catboost_train_train_work <- catboost.load_pool(data=result_train_train_work[,predictors,with=F], 
-                                            label = as.numeric(result_train_train_work$target_home)-1,
+                                            label = as.numeric(result_train_train_work$target_work)-1,
                                             feature_names = as.list(predictors),
-                                            cat_features=c(62),
+                                            cat_features=categorical_attrs,
                                             thread_count = -1)
   catboost_train_validate_work <- catboost.load_pool(data=result_train_validate_work[,predictors,with=F], 
-                                           label = as.numeric(result_train_validate_work$target_home)-1,
+                                           label = as.numeric(result_train_validate_work$target_work)-1,
                                            feature_names = as.list(predictors),
-                                           cat_features=c(62),
+                                           cat_features=categorical_attrs,
                                            thread_count = -1)
 
   
@@ -213,7 +209,7 @@ result$mcc <-factor(result$mcc)
   catboost_param_grid = expand.grid(
     depth=c(6,8,10), 
     iterations=c(100,1000), 
-    eval_metric=c("Accuracy","Auc")
+    eval_metric=c("Accuracy","AUC")
   )
   catboost_param_grid$home_accuracy <- NA
   catboost_param_grid$work_accuracy <- NA
@@ -233,7 +229,9 @@ result$mcc <-factor(result$mcc)
       border_count = 32,
       depth = params$depth,
       use_best_model = FALSE,
-      learning_rate = 0.03)
+      learning_rate = 0.03,
+      verbose=F,
+      thread_count=16)
     
     catboost_model_home_for_validation <- catboost.train(learn_pool = catboost_train_train_home, params = catboost_fit_params)
     catboost_model_work_for_validation <- catboost.train(learn_pool = catboost_train_train_work, params = catboost_fit_params)
@@ -241,8 +239,8 @@ result$mcc <-factor(result$mcc)
     result_train_validate_home$score_catboost_home <- catboost.predict(catboost_model_home_for_validation, catboost_train_validate_home, prediction_type = "Probability")
     result_train_validate_work$score_catboost_work <- catboost.predict(catboost_model_work_for_validation, catboost_train_validate_work, prediction_type = "Probability")  
     
-    pred_home <- result_train_validate[order(customer_id,-score_home),][,head(.SD,1),by=.(customer_id)]
-    pred_work <- result_train_validate_work[order(customer_id,-score_work),][,head(.SD,1),by=.(customer_id)]
+    pred_home <- result_train_validate_home[order(customer_id,-score_catboost_home),][,head(.SD,1),by=.(customer_id)]
+    pred_work <- result_train_validate_work[order(customer_id,-score_catboost_work),][,head(.SD,1),by=.(customer_id)]
     
     catboost_param_grid$home_accuracy[i] <- sum(as.numeric(pred_home$target_home)-1) / nrow(pred_home)
     catboost_param_grid$work_accuracy[i] <- sum(as.numeric(pred_work$target_work)-1) / nrow(pred_work)
@@ -251,6 +249,8 @@ result$mcc <-factor(result$mcc)
   
   optimal_catboost_home_params <- catboost_param_grid[which.max(catboost_param_grid$home_accuracy),]
   optimal_catboost_work_params <- catboost_param_grid[which.max(catboost_param_grid$work_accuracy),]
+  
+  print(catboost_param_grid)
 
 
 
@@ -262,90 +262,78 @@ result$mcc <-factor(result$mcc)
 
 # SCORE TEST DATSET
 
-
-  # Fit RandomForest for Home on Train
-  xgb.model_home <- xgboost(
-    data=data.matrix(result_train[,c(predictors),with=F]), label=as.numeric(result_train$target_home)-1,
-    max_depth=10,
-    subsample=1.0,
-    nrounds=1000, 
-    objective="binary:logistic", 
-    eval_metric="auc")
+    
+    # Choose the best model
+    
+    catboost_fit_params_home <- list(iterations = 1000,
+                                thread_count = 16,
+                                eval_metric = 'Accuracy',
+                                border_count = 32,
+                                depth = 8,
+                                use_best_model = FALSE,
+                                learning_rate = 0.03)
+    catboost_fit_params_work <- list(iterations = 1000,
+                                     thread_count = 16,
+                                     eval_metric = 'Accuracy',
+                                     border_count = 32,
+                                     depth = 10,
+                                     use_best_model = FALSE,
+                                     learning_rate = 0.03)
   
-  catboost_fit_params <- list(iterations = 1000,
-                              thread_count = 16,
-                              eval_metric = 'Accuracy',
-                              border_count = 32,
-                              depth = 10,
-                              use_best_model = FALSE,
-                              learning_rate = 0.03)
-  
+    catboost_model_home <- catboost.train(learn_pool = catboost_train_home, params = catboost_fit_params_home)
+    catboost_model_work <- catboost.train(learn_pool = catboost_train_work, params = catboost_fit_params_work)
     
-    
-    catboost_model <- catboost.train(learn_pool = catboost_train_home, params = fit_params)
-    
-    result_test$score_home <- catboost.predict(catboost_model, catboost_test_home, prediction_type = "Probability")
-    result_train$score_home <- catboost.predict(catboost_model, catboost_train_home, prediction_type = "Probability")
-    
-    # fi_home = data.frame(catboost_model$feature_importances)
-    # fi$var = row.names(fi)
-    # fi[order(-fi$catboost_model.feature_importances),]
-    
-
-    
-    
-    # Score Home on TEST
-    # result_test$score_home <- predict(rf_model_home, result_test[,c(predictors),with=F], ntree=100)
-    # result_test$score_home <- predict(glm_model_home, result_test[,c(predictors),with=F], type="response")
-    # result_test$score_home <- predict(xgb.model_home, data.matrix(result_test[,c(predictors),with=F]))
+    result_test$score_home <- catboost.predict(catboost_model_home, catboost_test, prediction_type = "Probability")
+    result_test$score_work <- catboost.predict(catboost_model_work, catboost_test, prediction_type = "Probability")
     
     # Get Home Prediction for TEST
     pred_test_home <- result_test[order(customer_id,-score_home),][,head(.SD,1),by=.(customer_id)][,c("customer_id","pos_atm_orig_lat","pos_atm_orig_lon")]
     colnames(pred_test_home) <- c("customer_id","home_lat","home_lon")
-  
-  
-  
-  
-  # Fit RandomForest for Work on Train
-  xgb.model_work <- xgboost::xgboost(
-    data=data.matrix(result_train[!is.na(work_lat) & !is.na(work_lon),c(predictors),with=F]), 
-    label=as.numeric(result_train$target_work[!is.na(result_train$work_lat) & !is.na(result_train$work_lon)])-1, 
-    nrounds=1000,
-    subsample=1.0,
-    max_depth=10,
-    objective="binary:logistic", 
-    eval_metric="auc")
+    
+    # Get Home Prediction for TEST
+    pred_test_work <- result_test[order(customer_id,-score_work),][,head(.SD,1),by=.(customer_id)][,c("customer_id","pos_atm_orig_lat","pos_atm_orig_lon")]
+    colnames(pred_test_work) <- c("customer_id","work_lat","work_lon")
   
   
   
   
   
-  catboost_model <- catboost.train(learn_pool=catboost_train_work, params=fit_params)
-  
-  result_test$score_work <- catboost.predict(catboost_model, catboost_test_work, prediction_type = "Probability")
-  result_train$score_work <- catboost.predict(catboost_model, catboost_train_work, prediction_type = "Probability")
-  
-  # Score Home on TEST
-  # result_test$score_work <- predict(rf_model_work, result_test[,c(predictors),with=F], ntree=100)
-  # result_test$score_work <- predict(glm_model_work, result_test[,c(predictors),with=F], type="response")
-  result_test$score_work <- predict(xgb.model_work, data.matrix(result_test[,c(predictors),with=F]))
-  
-  # Get Home Prediction for TEST
-  pred_test_work <- result_test[order(customer_id,-score_work),][,head(.SD,1),by=.(customer_id)][,c("customer_id","pos_atm_orig_lat","pos_atm_orig_lon")]
-  colnames(pred_test_work) <- c("customer_id","work_lat","work_lon")
-  
-  
-  pred <- merge(pred_test_work, pred_test_home, by.x="customer_id", by.y="customer_id", all.x=T, all.y=F)
-  
-  pred <- rbind(pred, result_add)
-  
-  length(unique(pred$customer_id))
-  
-  write.csv(pred, "pred.csv", sep=",", row.names = F, col.names = T, quote=F)
+    # Create output dataset
+    
+    pred <- merge(pred_test_work, pred_test_home, by.x="customer_id", by.y="customer_id", all.x=T, all.y=F)
+    pred <- rbind(pred, result_add)
+    
+    length(unique(pred$customer_id))
+    
+    write.csv(pred, "pred.csv", sep=",", row.names = F, col.names = T, quote=F)
 
 
 
-
+    # Other algorithms for Stacking
+    
+    result_train_home$catboost_score_home <- catboost.predict(catboost_model_home, catboost_train_home, prediction_type = "Probability")
+    result_train_work$catboost_score_work <- catboost.predict(catboost_model_work, catboost_train_work, prediction_type = "Probability")
+    
+    xgb_model_home <- xgboost(
+      data=data.matrix(result_train_home[,c(predictors),with=F]), label=as.numeric(result_train_home$target_home)-1,
+      max_depth=10,
+      subsample=1.0,
+      nrounds=1000, 
+      objective="binary:logistic", 
+      eval_metric="auc")
+    
+    result_train_home$xgb_score_home <- predict(xgb.model_home, result_train_home, ntree=100)
+    
+    # Fit RandomForest for Home on Train
+    xgb_model_work <- xgboost(
+      data=data.matrix(result_train_home[,c(predictors),with=F]), label=as.numeric(result_train_home$target_home)-1,
+      max_depth=10,
+      subsample=1.0,
+      nrounds=1000, 
+      objective="binary:logistic", 
+      eval_metric="auc")
+    
+    result_train_work$xgb_score_work <- predict(xgb_model_work, result_train_work, ntree=100)
 
 
 

@@ -49,7 +49,7 @@ process_customer <- function(current_transactions)
   current_transactions$target_home <- ifelse(current_transactions$id == nearest_point, 1, 0)
   
   # Compute distance to Work (meaningful values for Train only)
-  current_transactions$work_dist <- sqrt((current_transactions$pos_atm_lat - current_transactions$work_lat)^2 + (current_transactions$pos_atm_lon - current_transactions$work_lon)^2)
+  current_transactions$work_dist <- sqrt((current_transactions$pos_atm_orig_lat - current_transactions$work_lat)^2 + (current_transactions$pos_atm_orig_lon - current_transactions$work_lon)^2)
   work_nearest_point <- which.min(current_transactions$work_dist)
   work_nearest_point <- ifelse(length(work_nearest_point)==0,0,work_nearest_point)
   current_transactions$work_nearest_dist <- min(current_transactions$work_dist)
