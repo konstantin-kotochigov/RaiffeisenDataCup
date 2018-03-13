@@ -22,6 +22,7 @@ process_customer <- function(current_transactions)
       for (z in current_transactions$id)
       {
         
+        # Use transactions of particular category
         if (j == "any")
           type_transaction_ids <- setdiff(current_transactions$id, z)
         else

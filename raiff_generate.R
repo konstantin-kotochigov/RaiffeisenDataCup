@@ -16,8 +16,8 @@
   
   # Register parallel execution
   
-    registerDoMC(16)
-    n_threads = 16
+    registerDoMC(24)
+    n_threads = 24
   
   
   # Result dataset
