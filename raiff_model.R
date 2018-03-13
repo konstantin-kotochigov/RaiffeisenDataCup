@@ -3,7 +3,6 @@ library(catboost)
 
 # result = fread("result.csv", sep=";")
 
-
 predictors <- colnames(result)[substring(colnames(result),1,3) == "top"]
 predictors <- predictors[5:length(predictors)]
 predictors <- c(predictors, c("is_moscow","is_piter","is_other","center.dist","size_x","size_y",
@@ -12,14 +11,38 @@ predictors <- c(predictors, c("is_moscow","is_piter","is_other","center.dist","s
                               "pos_amount_cnt",
                               "pos_amount_min",
                               "pos_amount_max",
+                              "pos_sat_trn_cnt",
+                              "pos_sun_trn_cnt",
                               "pos_weekend_trn_cnt",
                               "pos_weekday_trn_cnt",
                               "pos_dow_cnt",
+                              "pos_sat_amount",
+                              "pos_sun_amount",
+                              "pos_weekend_amount",
+                              "pos_weekday_amount",
+                              "cust_amount",
                               "cust_amount_avg",
                               "cust_amount_cnt",
                               "cust_amount_max",
                               "cust_weekend_trn_cnt",
                               "cust_weekend_trn_rate",
+                              "cust_sat_trn_cnt",
+                              "cust_sun_trn_cnt",
+                              "cust_dow_cnt",
+                              "cust_sat_amount",
+                              "cust_sun_amount",
+                              "cust_weekend_amount",
+                              "cust_weekday_amount",
+                              "pos_amount_rate",
+                              "pos_cnt_rate",
+                              "pos_amount_max_rate",
+                              "pos_dow_cnt_rate",
+                              "pos_sat_cnt_rate",
+                              "pos_sun_cnt_rate",
+                              "pos_sat_amount_rate",
+                              "pos_sun_amount_rate",
+                              "pos_weekend_amount_rate",
+                              "pos_weekday_amount_rate",
                               "cluster_rank_by_size",
                               "cluster_rank_by_max_diss",
                               "cluster_rank_by_av_diss",
@@ -27,6 +50,7 @@ predictors <- c(predictors, c("is_moscow","is_piter","is_other","center.dist","s
                               "cluster_rank_by_separation",
                               "cluster_dist",
                               "cluster_diss_to_max_diss",
+                              "cluster_cnt",
                               "diameter",
                               "separation",
                               "cluster_cnt",
@@ -38,6 +62,7 @@ predictors <- c(predictors, c("is_moscow","is_piter","is_other","center.dist","s
                               "cluster_mean_lon"
                              
 ))
+predictors <- unique(predictors)
 
 
 
@@ -334,6 +359,9 @@ result$mcc <-factor(result$mcc)
       eval_metric="auc")
     
     result_train_work$xgb_score_work <- predict(xgb_model_work, result_train_work, ntree=100)
+    
+    write.csv(result_train_home, "output/result_train.csv", sep=";", row.names=F)
+    write.csv(result_train_work, "output/result_work.csv", sep=";", row.names=F)
 
 
 
