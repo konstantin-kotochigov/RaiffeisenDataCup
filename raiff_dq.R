@@ -1,5 +1,7 @@
 library(data.table)
 
+print("Filtering transactions with missing or inconsistent data")
+
 
 # Delete empty transactions
 filtered.df <- raw.df[!is.na(pos_atm_lat) & !is.na(pos_atm_lon),]
@@ -34,6 +36,8 @@ filtered.df$home_lon[filtered.df$df=="test"] <- NA
 filtered.df$work_lat[filtered.df$df=="test"] <- NA
 filtered.df$work_lon[filtered.df$df=="test"] <- NA
 
+
+print("Computing coordinates")
 
 # Calculate bounding area for each customer_id (don't forget to include home and work points)
 areaCoordinates <- filtered.df[,
@@ -79,7 +83,7 @@ filtered.df <- merge(filtered.df, areaCoordinates, by.x="customer_id", by.y="cus
 # test.df <- raw.df[raw.df$df=="test",]
 
 
-write.csv(filtered.df, "output/filtered_df",sep=";",col.names=TRUE,row.names=FALSE)
+write.csv(filtered.df, "output/filtered_df.csv",sep=";",col.names=TRUE,row.names=FALSE)
 
 
 

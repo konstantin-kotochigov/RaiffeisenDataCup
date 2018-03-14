@@ -7,6 +7,8 @@ computeDist <- function(x1, y1, x2, y2)
   sqrt((x1 - x2)^2 + (y1 - y2)^2)
 }
 
+print("Aggregating data")
+
 # Normalize coordinates!
   
   normalize <- function(x,x0,size)
@@ -71,6 +73,9 @@ computeDist <- function(x1, y1, x2, y2)
       size_y=head(size_y,1),
       size=head(size,1),
       bottom=head(bottom,1),
+      city=head(city,1),
+      country=head(country,1),
+      currency=head(currency,1),
       
       is_atm=head(is_atm,1),
       top_city=head(top_city,1),
