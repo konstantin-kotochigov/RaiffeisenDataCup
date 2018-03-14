@@ -1,7 +1,7 @@
 library(data.table)
 library(catboost)
 
-# result = fread("result.csv", sep=";")
+result = fread("raiff_attrs.csv", sep=",", row.names=T)
 
 predictors <- colnames(result)[substring(colnames(result),1,3) == "top"]
 predictors <- predictors[5:length(predictors)]
@@ -232,9 +232,11 @@ result$mcc <-factor(result$mcc)
   # Alogirithm2: CatBoost
   
   catboost_param_grid = expand.grid(
-    depth=c(6,8,10), 
-    iterations=c(100,1000), 
-    eval_metric=c("Accuracy","AUC")
+    depth=c(8), 
+    iterations=c(500),
+    l2_leaf_reg = c(0.1, 1.0, 3.5, 5),
+    # eval_metric=c("Accuracy","AUC"),
+    loss_function=c("Logloss")
   )
   catboost_param_grid$home_accuracy <- NA
   catboost_param_grid$work_accuracy <- NA
@@ -249,13 +251,15 @@ result$mcc <-factor(result$mcc)
     print(params)
     
     catboost_fit_params <- list(iterations = params$iterations,
-      thread_count = 16,
-      eval_metric = params$eval_metric,
+      #eval_metric = params$eval_metric,
+      # eval_metric="Accuracy",
+      loss_function = params$loss_function,
       border_count = 32,
       depth = params$depth,
       use_best_model = FALSE,
       learning_rate = 0.03,
-      verbose=F,
+      metric_period=100,
+      l2_leaf_reg = params$l2_leaf_reg,
       thread_count=16)
     
     catboost_model_home_for_validation <- catboost.train(learn_pool = catboost_train_train_home, params = catboost_fit_params)
@@ -290,19 +294,21 @@ result$mcc <-factor(result$mcc)
     
     # Choose the best model
     
-    catboost_fit_params_home <- list(iterations = 1000,
+    catboost_fit_params_home <- list(iterations = 500,
                                 thread_count = 16,
-                                eval_metric = 'Accuracy',
+                                loss_function = 'Logloss',
                                 border_count = 32,
                                 depth = 8,
                                 use_best_model = FALSE,
+                                l2_leaf_reg=5.0,
                                 learning_rate = 0.03)
-    catboost_fit_params_work <- list(iterations = 1000,
+    catboost_fit_params_work <- list(iterations = 500,
                                      thread_count = 16,
-                                     eval_metric = 'Accuracy',
+                                     loss_function = 'Logloss',
                                      border_count = 32,
-                                     depth = 10,
+                                     depth = 8,
                                      use_best_model = FALSE,
+                                     l2_leaf_reg=1.0,
                                      learning_rate = 0.03)
   
     catboost_model_home <- catboost.train(learn_pool = catboost_train_home, params = catboost_fit_params_home)
