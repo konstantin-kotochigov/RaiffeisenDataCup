@@ -1,7 +1,7 @@
 library(data.table)
 library(catboost)
 
-result = fread("raiff_attrs.csv", sep=",", row.names=T)
+result = fread("output/raiff_attrs.csv", sep=",", row.names=T)
 
 predictors <- colnames(result)[substring(colnames(result),1,3) == "top"]
 predictors <- predictors[5:length(predictors)]
@@ -336,7 +336,7 @@ result$mcc <-factor(result$mcc)
     
     length(unique(pred$customer_id))
     
-    write.csv(pred, "pred.csv", sep=",", row.names = F, col.names = T, quote=F)
+    write.csv(pred, "output/pred.csv", sep=",", row.names = F, col.names = T, quote=F)
 
 
 
