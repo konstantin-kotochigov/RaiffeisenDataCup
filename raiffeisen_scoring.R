@@ -127,7 +127,7 @@ computeDist <- function(x1, y1, x2, y2)
   df$pos_weekend_amount_rate <- round(df$pos_weekend_amount / df$cust_weekend_amount, 3)
   df$pos_weekday_amount_rate <- round(df$pos_weekday_amount / df$cust_weekday_amount, 3)
   
-  # write.table(df, "df_agregated.csv", sep=";", row.names=F, col.names = T)
+  write.table(df, "output/df_agregated.csv", sep=";", row.names=F, col.names = T)
   
 
   

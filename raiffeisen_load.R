@@ -30,9 +30,8 @@ showMap <- function(custid)
 
 # Load data
 
-  if (Sys.info()['sysname']=="Windows") setwd("/Users/Konstantin/Downloads/")
-  raw.train <- fread("train_set.csv")
-  raw.test <- fread("test_set.csv")
+  raw.train <- fread("data/train_set.csv")
+  raw.test <- fread("data/test_set.csv")
 
 
 # Load cities reference
@@ -256,9 +255,9 @@ showMap <- function(custid)
 
 
 if (Sys.info()['sysname']=="Windows")
-  mcc <- read.table("mcc.csv",sep=",", header=T)
+  mcc <- read.table("data/mcc.csv",sep=",", header=T)
 if (Sys.info()['sysname']!="Windows")
-  mcc <- read.table("mcc.csv",sep=",", header=T, fileEncoding="latin1")
+  mcc <- read.table("data/mcc.csv",sep=",", header=T, fileEncoding="latin1")
 
   
 mcc <- mcc[-c(221),]
@@ -321,6 +320,6 @@ raw.df <- raw.df[,
   # check.cities <- as.data.frame(table(check$city))
   # check.cities[order(-check.cities$Freq),]
 
-# write.csv(raw.df, "/Users/Konstantin/work/raw_df",sep=";",col.names=TRUE,row.names=FALSE)
+write.csv(raw.df, "output/raw_df.csv",sep=";",col.names=TRUE,row.names=FALSE)
 
 

@@ -113,7 +113,7 @@
   
   p_time
     
-  write.csv(result, "raiff_attrs.csv", sep=";", row.names=F)
+  write.csv(result, "output/raiff_attrs.csv", sep=";", row.names=F)
 
 
 

@@ -79,7 +79,7 @@ filtered.df <- merge(filtered.df, areaCoordinates, by.x="customer_id", by.y="cus
 # test.df <- raw.df[raw.df$df=="test",]
 
 
-# write.csv(filtered.df, "/Users/Konstantin/work/filtered_df",sep=";",col.names=TRUE,row.names=FALSE)
+write.csv(filtered.df, "output/filtered_df",sep=";",col.names=TRUE,row.names=FALSE)
 
 
 
