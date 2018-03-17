@@ -28,8 +28,8 @@ filtered.df <- merge(filtered.df, rbind(train.customers,test.customers), by.x="c
 # raw.df <- filtered.df
 
 # Delete transactions that are 50km from top city center (for some customers all transactions - CHECK!)
-shit.df <- filtered.df[filtered.df$top_city_center_dist >= 50,]
-filtered.df <- filtered.df[is.na(filtered.df$top_city_center_dist) | filtered.df$top_city_center_dist < 50,]
+# shit.df <- filtered.df[filtered.df$top_city_center_dist >= 50,]
+# filtered.df <- filtered.df[is.na(filtered.df$top_city_center_dist) | filtered.df$top_city_center_dist < 50,]
 
 filtered.df$home_lat[filtered.df$df=="test"] <- NA
 filtered.df$home_lon[filtered.df$df=="test"] <- NA
@@ -82,7 +82,7 @@ filtered.df <- merge(filtered.df, areaCoordinates, by.x="customer_id", by.y="cus
 # train.df <- raw.df[raw.df$df=="train",]
 # test.df <- raw.df[raw.df$df=="test",]
 
-
+print("Writing dataset")
 write.csv(filtered.df, "output/filtered_df.csv",sep=";",col.names=TRUE,row.names=FALSE)
 
 

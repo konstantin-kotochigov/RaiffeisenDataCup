@@ -1,49 +1,11 @@
-# library(ggmap)
-library(data.table)
-
-showMap <- function(custid)
-{
-  require(ggmap)
-  
-  x <- raw.df[raw.df$customer_id == custid,,]
-  area <- areaCoordinates[customer_id==custid,]
-  
-  bgMap = get_map(location=c(area$center_lon, lon = area$center_lat), source = "google", zoom = area$zoom, color="bw")
-  ggmap(bgMap) + geom_point(aes(x = pos_atm_lon, y = pos_atm_lat), data = x, alpha = .75, size=3, color="red") + 
-    geom_point(aes(x = home_lon, y = home_lat), data = x, alpha = .75, size=3, color="blue") + 
-    geom_point(aes(x = work_lon, y = work_lat), data = x, alpha = .75, size=3, color="green")
-}
-
-showMap <- function(custid)
-{
-  require(ggmap)
-  
-  x <- raw.df[raw.df$customer_id == custid,,]
-  center = data.frame(x=top_cluster_center[2], y=top_cluster_center[1])
-  
-  bgMap = get_map(location=c(mean(x$pos_atm_lon,na.rm=T), lon = mean(x$pos_atm_lat,na.rm=T)), source = "google", zoom = 9, color="bw")
-  ggmap(bgMap) + geom_point(aes(x = pos_atm_lon, y = pos_atm_lat), data = x, alpha = .75, size=3, color="red") + 
-    geom_point(aes(x = home_lon, y = home_lat), data = x[1,], alpha = .75, size=3, color="blue") + 
-    geom_point(aes(x = work_lon, y = work_lat), data = x[1,], alpha = .75, size=3, color="green") + 
-    geom_point(aes(x = center$x, y = center$y), data = center, alpha = .75, size=3, color="yellow")
-}
-
 # Load data
 
   raw.train <- fread("data/train_set.csv")
   raw.test <- fread("data/test_set.csv")
-
-
-# Load cities reference
-
-  # cities <- fread("worldcitiespop.txt")[,c("Country","City","Latitude","Longitude","Population")][,2:5]
-  # colnames(cities) <- c("city","city_lat","city_lon","city_pop")
-  # cities <- cities[!is.na(cities$city_pop),]
-  # cities <- cities[cities$city_pop > 1000,]
-  # cities$city <- toupper(cities$city)
-  
-  # Delete ambiguous cities
-  # cities <- cities[!duplicated(cities$city),]
+  if (Sys.info()['sysname']=="Windows")
+    mcc <- read.table("data/mcc.csv",sep=",", header=T)
+  if (Sys.info()['sysname']!="Windows")
+    mcc <- read.table("data/mcc.csv",sep=",", header=T, fileEncoding="latin1")
 
 
 # Data Quality
@@ -62,42 +24,33 @@ showMap <- function(custid)
   colnames(raw.test)[colnames(raw.test) %in% c("pos_address_lat","pos_address_lon")] <- c("pos_lat","pos_lon")
   
   
-  # Next transofmrations for both datasets
+# Apply all further transformations to both datasets
+
   raw.df <- rbind(raw.train, raw.test)
-  
   
   colnames(raw.df)[colnames(raw.df) %in% c("atm_address_lat","atm_address_lon")] <- c("atm_lat","atm_lon")
   colnames(raw.df)[colnames(raw.df) %in% c("home_add_lat","home_add_lon")] <- c("home_lat","home_lon")
   colnames(raw.df)[colnames(raw.df) %in% c("work_add_lat","work_add_lon")] <- c("work_lat","work_lon")
   
   
+# City names
+
   raw.df$city <- toupper(raw.df$city)
-  raw.df$city[raw.df$city=="MOSKVA"] <- "MOSCOW"
-  raw.df$city[raw.df$city=="SANKT-PETERBU"] <- "SAINT PETERSBURG"
-  raw.df$city[raw.df$city=="ST-PETERSBURG"] <- "SAINT PETERSBURG"
-  raw.df$city[raw.df$city=="ST PETERSBURG"] <- "SAINT PETERSBURG"
-  raw.df$city[raw.df$city=="ST PETERBURG"] <- "SAINT PETERSBURG"
-  raw.df$city[raw.df$city=="ST-PETERBURG"] <- "SAINT PETERSBURG"
-  raw.df$city[raw.df$city=="ST.PETERSBURG"] <- "SAINT PETERSBURG"
-  raw.df$city[raw.df$city=="SANKT-PETERSB"] <- "SAINT PETERSBURG"
-  raw.df$city[raw.df$city=="Moskva"] <- "MOSCOW"
-  raw.df$city[raw.df$city=="St Petersburg"] <- "SAINT PETERSBURG"
-  raw.df$city[raw.df$city=="SAINT PETERSB"] <- "SAINT PETERSBURG"
-  raw.df$city[raw.df$city=="SAINT-PETERSB"] <- "SAINT PETERSBURG"
+
+  raw.df$city[raw.df$city %in% c("SANKT-PETERBU","ST-PETERSBURG","ST PETERSBURG","ST.-PETERSBUR","SANKT PETERBU","SANKT-PETERS","SANQT PETERBU","ST PETERSBUR","S.PETERBURG","SAINT-PETERBU","ST PETERBURG","ST-PETERBURG","ST.PETERSBURG","SANKT-PETERSB","St Petersburg","SAINT PETERSB","SAINT-PETERSB"] <- "SAINT PETERSBURG"
+  
+  raw.df$city[raw.df$city %in% c("MOSKVA","Moskva","G MOSKVA","G. MOSKVA","MOSKOW","MARINO"] <- "MOSCOW"
+
   raw.df$city[raw.df$city=="NOVOROSIYSK"] <- "NOVOROSSIYSK"
   raw.df$city[raw.df$city=="NOVOROSSIIYSK"] <- "NOVOROSSIYSK"
-  raw.df$city[raw.df$city=="MOSKOW"] <- "MOSCOW"
   raw.df$city[raw.df$city=="NOVOROSSIISK"] <- "NOVOROSSIYSK"
   raw.df$city[raw.df$city=="N.NOVGOROD"] <- "NIZHNIY NOVGOROD"
   raw.df$city[raw.df$city=="NIZHNIY NOVGO"] <- "NIZHNIY NOVGOROD"
-  raw.df$city[raw.df$city=="G MOSKVA"] <- "MOSCOW"
-  raw.df$city[raw.df$city=="G. MOSKVA"] <- "MOSCOW"
   raw.df$city[raw.df$city=="VORONEJ"] <- "VORONEZH"
   raw.df$city[raw.df$city=="SOLNECHNII"] <- "SOLNECHNYY"
   raw.df$city[raw.df$city=="EKATERINBURG"] <- "YEKATERINBURG"
   raw.df$city[raw.df$city=="NVSIBR"] <- "NOVOSIBIRSK"
   raw.df$city[raw.df$city=="VLADIMIRSKAYA"] <- "VLADIMIR"
-  raw.df$city[raw.df$city=="MARINO"] <- "MOSCOW"
   raw.df$city[raw.df$city=="AKSAI"] <- "AKSAY"
   
   # cities$city_lat[cities$city=="TULA"] <- 54.193033
@@ -219,6 +172,10 @@ showMap <- function(custid)
   customer.top.city <- city.freq[,.(top_city=head(city,1), top_city_lat=head(city_lat,1), top_city_lon=head(city_lon,1)),by=.(customer_id)]
   
   raw.df <- merge(raw.df, customer.top.city, by.x="customer_id", by.y="customer_id", all.x=TRUE, all.y=FALSE)
+
+  raw.df$is_moscow <- factor(ifelse(raw.df$top_city=='MOSCOW',1,0))
+  raw.df$is_piter <- factor(ifelse(raw.df$top_city=='SAINT PETERSBURG',1,0))
+  raw.df$is_other <- factor(ifelse(!raw.df$top_city %in% c('MOSCOW','SAINT PETERSBURG'),1,0))
   
   
   
@@ -254,10 +211,7 @@ showMap <- function(custid)
 
 
 
-if (Sys.info()['sysname']=="Windows")
-  mcc <- read.table("data/mcc.csv",sep=",", header=T)
-if (Sys.info()['sysname']!="Windows")
-  mcc <- read.table("data/mcc.csv",sep=",", header=T, fileEncoding="latin1")
+
 
   
 mcc <- mcc[-c(221),]
@@ -266,12 +220,27 @@ raw.df <- merge(raw.df, mcc[,c("code","category_eng")], by.x="mcc", by.y="code",
 
 raw.df$is_atm <- ifelse(!is.na(raw.df$atm_lat) & !is.na(raw.df$atm_lon), "Y", "N")
 
+# Convert transaction_date to Date
+raw.df[raw.df$transaction_date!="","transaction_date1"] <- as.Date(raw.df$transaction_date[raw.df$transaction_date!=""])
+raw.df[raw.df$transaction_date=="","transaction_date1"] <- NA
+raw.df$transaction_date <- raw.df$transaction_date1
 
-raw.df$transaction_date[raw.df$transaction_date==""] <- "1900-01-01"
+# Get Weekday (for 45 missing records => NA)
+raw.df$dow <- ifelse(is.na(raw.df$transaction_date),"NA",weekdays(raw.df$transaction_date))
+raw.df[raw.df$transaction_date=="","dow"] <- "NA"
 
-raw.df$dow <- weekdays(as.Date(raw.df$transaction_date))
+# Get public holidays
+raw.df$mondt <- substring(raw.df$transaction_date,6,10)
+raw.df$is_holiday <- factor(ifelse(raw.df$mondt %in% c("01-01","01-02","01-03","01-04","01-05","01-06","01-07","01-08","02-23","02-24","02-08",
+  "05-01","05-08","01-09","06-12","11-06"), 1, 0))
 
-# POS level aggregates
+# Set weekend and holidays flags for transcations
+raw.df$is_weekend <- ifelse(raw.df$dow %in% c('Saturday','Sunday'), 1, 0)
+raw.df$is_FSS_weekend <- ifelse(raw.df$dow %in% c('Friday','Saturday','Sunday'), 1, 0)
+raw.df$is_weekend_holiday <- ifelse(raw.df$is_weekend==1 | raw.df$is_holiday==1, 1, 0)
+raw.df$is_FSS_weekend_holiday <- ifelse(raw.df$is_FSS_weekend==1 | raw.df$is_holiday==1, 1, 0)
+
+# Choose attributes
 raw.df <- raw.df[,
                  c(
                    'customer_id',
@@ -284,11 +253,11 @@ raw.df <- raw.df[,
                    'pos_atm_lat',
                    'pos_atm_lon',
                    'is_atm',
-                   'category_eng',
+                   'is_moscow','is_piter','is_other',
                    'dow',
+                   'is_weekend','is_FSS_weekend','is_weekend_holiday','is_FSS_weekend_holiday',
                    'city_lat',
                    'city_lon',
-                 
                    'home_lat',
                    'home_lon',
                    'work_lat',
@@ -298,10 +267,6 @@ raw.df <- raw.df[,
                    'top_city_lat',
                    'top_city_lon')]
 
-  raw.df <-raw.df[order(df, customer_id, city),]
-  
-  
-  
   
   
   gpsDist <- function(lat1,lon1,lat2,lon2)
@@ -313,6 +278,7 @@ raw.df <- raw.df[,
   }
   
   raw.df$top_city_center_dist <- gpsDist(raw.df$pos_atm_lat, raw.df$pos_atm_lon, raw.df$top_city_lat, raw.df$top_city_lon)
+  raw.df$top_city_center_dist[is.na(raw.df$top_city_center_dist)] <- mean(raw.df$top_city_center_dist, na.rm=T)
   
   # check <- setdiff(unique(shit.df$customer_id), unique(raw.df$customer_id))
   
@@ -320,6 +286,7 @@ raw.df <- raw.df[,
   # check.cities <- as.data.frame(table(check$city))
   # check.cities[order(-check.cities$Freq),]
 
-write.csv(raw.df, "output/raw_df.csv",sep=";",col.names=TRUE,row.names=FALSE)
+print("Writing dataset")
+# write.csv(raw.df, "output/raw_df.csv",sep=";",col.names=TRUE,row.names=FALSE)
 
 

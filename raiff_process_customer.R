@@ -12,6 +12,29 @@ process_customer <- function(current_transactions)
   # Compute distance matrix
   
   d <- as.matrix(dist(current_transactions[,.(pos_atm_lat, pos_atm_lon),]))
+
+  for (j in c("any","6011","5411","5814","5812","5499","5912","5541","4111","5691","5977","5921","5999","5331","5261","5661"))
+  {
+    for (z in current_transactions$id)
+    {
+      
+      # Use transactions of particular category
+        if (j == "any")
+          type_transaction_ids <- setdiff(current_transactions$id, z)
+        else
+          type_transaction_ids <- setdiff(current_transactions$id[current_transactions$mcc==j], z)
+
+        current_transactions[z,paste("eps_1_cnt_",j,sep="")] <- sum(d[z,type_transaction_ids] < 0.01)
+        current_transactions[z,paste("eps_2_cnt_",j,sep="")] <- sum(d[z,type_transaction_ids] < 0.02)
+        current_transactions[z,paste("eps_3_cnt_",j,sep="")] <- sum(d[z,type_transaction_ids] < 0.03)
+
+        current_transactions[z,paste("eps_1_rate_",j,sep="")] <- current_transactions[z,paste("eps_1_cnt_",j,sep=""),with=FALSE] / ncol(d)
+        current_transactions[z,paste("eps_2_rate_",j,sep="")] <- current_transactions[z,paste("eps_2_cnt_",j,sep=""),with=FALSE] / ncol(d)
+        current_transactions[z,paste("eps_3_rate_",j,sep="")] <- current_transactions[z,paste("eps_3_cnt_",j,sep=""),with=FALSE] / ncol(d)
+
+    }
+  }
+  
   
   # 
   for (i in c(1,3,5,7,9))
@@ -30,12 +53,16 @@ process_customer <- function(current_transactions)
         
         top_n_type <- type_transaction_ids[order(d[z,type_transaction_ids])][1:i]
         top_n_type_distance <- mean(d[z,top_n_type])
+        top_n_type_distance_max <- max(d[z,top_n_type])
         
-        if (is.na(top_n_type_distance))
-          top_n_type_distance <- 2
+        if (is.na(top_n_type_distance)) top_n_type_distance <- 2
+        if (is.na(top_n_type_distance_max)) top_n_type_distance_max <- 2
         
         attr_name <- paste("top_",i,"_",j,"_mean_distance",sep="")
         current_transactions[z,attr_name] <- top_n_type_distance
+
+        attr_name <- paste("top_",i,"_",j,"_max_distance",sep="")
+        current_transactions[z,attr_name] <- top_n_type_distance_max
         
       }
     }

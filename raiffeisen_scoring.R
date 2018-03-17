@@ -121,17 +121,30 @@ print("Aggregating data")
   
   df <- merge(pos_level_agg, customer_level_agg, by.x="customer_id", by.y="customer_id")
   
-  df$pos_amount_rate <- round(df$pos_amount / df$cust_amount,3)
-  df$pos_cnt_rate <- round(df$pos_amount_cnt / df$cust_amount_cnt, 3)
-  df$pos_amount_max_rate <- round(df$pos_amount_max / df$cust_amount_max, 3)
-  df$pos_dow_cnt_rate <- round(df$pos_dow_cnt / df$cust_dow_cnt, 3)
-  df$pos_sat_cnt_rate <- round(df$pos_sat_cnt / df$cust_sat_trn_cnt, 3)
-  df$pos_sun_cnt_rate <- round(df$pos_sun_cnt / df$cust_sun_trn_cnt, 3)
-  df$pos_sat_amount_rate <- round(df$pos_sat_amount / df$cust_sat_amount, 3)
-  df$pos_sun_amount_rate <- round(df$pos_sun_amount / df$cust_sun_amount, 3)
-  df$pos_weekend_amount_rate <- round(df$pos_weekend_amount / df$cust_weekend_amount, 3)
-  df$pos_weekday_amount_rate <- round(df$pos_weekday_amount / df$cust_weekday_amount, 3)
   
+  # Current POS amount of all spent money
+  df$pos_amount_rate <- round(df$pos_amount / df$cust_amount,3)
+
+  # Current POS transactions of all transactions
+  df$pos_cnt_rate <- round(df$pos_amount_cnt / df$cust_amount_cnt, 3)
+  
+  df$pos_amount_max_rate <- round(df$pos_amount_max / df$cust_amount_max, 3)
+  
+  df$pos_dow_cnt_rate <- round(df$pos_dow_cnt / df$cust_dow_cnt, 3)
+  
+  df$pos_sat_cnt_rate <- ifelse(df$cust_sat_trn_cnt == 0, 0, round(df$pos_sat_cnt / df$cust_sat_trn_cnt, 3))
+  
+  df$pos_sun_cnt_rate <- ifelse(df$cust_sun_trn_cnt==0, 0, round(df$pos_sun_cnt / df$cust_sun_trn_cnt, 3))
+  
+  df$pos_sat_amount_rate <- ifelse(df$cust_sat_amount==0, 0, round(df$pos_sat_amount / df$cust_sat_amount, 3))
+  
+  df$pos_sun_amount_rate <- ifelse(df$cust_sun_amount==0, 0, round(df$pos_sun_amount / df$cust_sun_amount, 3))
+  
+  df$pos_weekend_amount_rate <- ifelse(df$cust_weekend_amount==0,0,round(df$pos_weekend_amount / df$cust_weekend_amount, 3))
+  
+  df$pos_weekday_amount_rate <- ifelse(df$cust_weekday_amount==0,0,round(df$pos_weekday_amount / df$cust_weekday_amount, 3))
+  
+
   write.table(df, "output/df_agregated.csv", sep=";", row.names=F, col.names = T)
   
 

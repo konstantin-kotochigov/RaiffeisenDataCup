@@ -7,10 +7,13 @@ source("code/raiffeisen_load.R")
 # Filter data
 source("code/raiff_dq.R")
 
+# Agregate data
+source("code/raiffeisen_scoring.R")
+
 # Compute distance based attributes
 source("code/raiff_process_customer.R")
 
-# Aggregate data
+# Compute distance-based attributes
 source("code/raiff_generate.R")
 
 # Load ML Utils
