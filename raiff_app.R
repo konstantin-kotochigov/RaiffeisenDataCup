@@ -1,26 +1,26 @@
 # For Windows system set working directory (For Linux server use current wd)
 if (Sys.info()['sysname']=="Windows") setwd("C:/Users/konstantin/git/raiff/")
 
+# Load ML Utils
+source("code/0_utils.R")
+
 # Load data
-source("code/raiffeisen_load.R")
+source("code/1_load.R")
 
 # Filter data
-source("code/raiff_dq.R")
+source("code/2_filter.R")
 
 # Agregate data
-source("code/raiffeisen_scoring.R")
+source("code/3_generate_pos_attributes.R")
 
 # Compute distance based attributes
-source("code/raiff_process_customer.R")
+source("code/4_process_customer.R")
 
 # Compute distance-based attributes
-source("code/raiff_generate.R")
+source("code/5_generate_distance_attributes.R")
 
-# Load ML Utils
-source("code/raiff_utils.R")
-
-# Predict missing customers
-source("code/raiff_add_test.R")
+# Feature Selection and Datasets
+source("code/feature_selection.R")
 
 # Fit models
-source("code/raiff_model.R")
+source("code/model.R")
