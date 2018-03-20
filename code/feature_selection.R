@@ -1,4 +1,4 @@
-library(data.table)
+require(data.table)
 library(catboost)
 
 result = fread("output/raiff_attrs.csv", sep=",", header=T)
@@ -125,28 +125,32 @@ result$mcc_group <- group.factor(factor(result$mcc), top.values=52)
     
     # Print results    
 
-      print("Stats for datasets...")
-      print(paste(
-        "Train=", length(unique(result_train$customer_id)),
-        " Test=", length(unique(result_test$customer_id)),
-        " Train(Home)=", length(unique(result_train_home$customer_id)),
-        " Train(Work)=", length(unique(result_train_work$customer_id)),
-        " Train-Train(Home)", length(unique(result_train_train_home$customer_id)),
-        " Train-Validate(Home)", length(unique(result_train_validate_home$customer_id)),
-        " Train-Train(Work)=", length(unique(result_train_train_work$customer_id)),
-        " Train-Validate(Work)=",length(unique(result_train_validate_work$customer_id)),sep=""))
+      #print("Stats for datasets...")
+      # print(paste(
+      #   "Train=", length(unique(result_train$customer_id)),
+      #   " Test=", length(unique(result_test$customer_id)),
+      #   " Train(Home)=", length(unique(result_train_home$customer_id)),
+      #   " Train(Work)=", length(unique(result_train_work$customer_id)),
+      #   " Train-Train(Home)", length(unique(train_home$customer_id)),
+      #   " Train-Validate(Home)", length(unique(validate_home$customer_id)),
+      #   " Train-Train(Work)=", length(unique(train_work$customer_id)),
+      #   " Train-Validate(Work)=",length(unique(validate_work$customer_id)),sep=""))
       
     return (
       list(
-        train_home=result_train_train_home, 
-        train_work=result_train_train_work, 
-        validate_home=result_train_validate_home, 
-        validate_work=result_train_validate_work)
+        train_home=train_home, 
+        train_work=train_work, 
+        validate_home=validate_home, 
+        validate_work=validate_work)
     )
   
   }
   
-  # result <- createTrainTest()
+  datasets <- createTrainTest(0.8)
+  result_train_train_home <- datasets$train_home
+  result_train_train_work <- datasets$train_work
+  result_train_validate_home <- datasets$validate_home
+  result_train_validate_work <- datasets$validate_work
   
 
   
@@ -154,33 +158,35 @@ result$mcc_group <- group.factor(factor(result$mcc), top.values=52)
   factors <- get.factor.columns(data.frame(result[,predictors,with=FALSE]))
   numerics <- get.numeric.columns(data.frame(result[,predictors,with=FALSE]))
 
-  numeric_auc_importance_home <- get.auc.importance(data.frame(result_train_home[,predictors,with=F]), result_train_home$target_home)
-  numeric_auc_importance_work <- get.auc.importance(data.frame(result_train_work[,predictors,with=F]), result_train_work$target_home)
-
-  top_100_home_numeric_predictors <- numeric_auc_importance_home$var[1:100]
-  top_100_work_numeric_predictors <- numeric_auc_importance_work$var[1:100]
-
-  top_50_home_numeric_predictors <- numeric_auc_importance_home$var[1:50]
-  top_50_work_numeric_predictors <- numeric_auc_importance_work$var[1:50]
-
-  top_150_home_numeric_predictors <- numeric_auc_importance_home$var[1:150]
-  top_150_work_numeric_predictors <- numeric_auc_importance_work$var[1:150]
-
-  top_100_home_predictors <- c(factors,top_home_numeric_predictors)
-  top_100_work_predictors <- c(factors,top_work_numeric_predictors)
+  # numeric_auc_importance_home <- get.auc.importance(data.frame(result_train_home[,predictors,with=F]), result_train_home$target_home)
+  # numeric_auc_importance_work <- get.auc.importance(data.frame(result_train_work[,predictors,with=F]), result_train_work$target_work)
+  # 
+  # top_100_home_numeric_predictors <- numeric_auc_importance_home$var[1:100]
+  # top_100_work_numeric_predictors <- numeric_auc_importance_work$var[1:100]
+  # 
+  # top_50_home_numeric_predictors <- numeric_auc_importance_home$var[1:50]
+  # top_50_work_numeric_predictors <- numeric_auc_importance_work$var[1:50]
+  # 
+  # top_150_home_numeric_predictors <- numeric_auc_importance_home$var[1:150]
+  # top_150_work_numeric_predictors <- numeric_auc_importance_work$var[1:150]
+  # 
+  # top_100_home_predictors <- c(factors,top_100_home_numeric_predictors)
+  # top_100_work_predictors <- c(factors,top_100_work_numeric_predictors)
 
 
 
 
   # Filter zero variation predictors
-  columns_info_home <- classify.columns(data.frame(result_train_home), y.name="target_home")
-  columns_info_work <- classify.columns(data.frame(result_train_work), y.name="target_work")
-  no_variance_home_cols <- columns_info_home$var[columns_info_home$lev == 1]
-  no_variance_work_cols <- columns_info_work$var[columns_info_work$lev == 1]
-  predictors <- setdiff(predictors, c(no_variance_home_cols,no_variance_work_cols))
+  # columns_info_home <- classify.columns(data.frame(result_train_home), y.name="target_home")
+  # columns_info_work <- classify.columns(data.frame(result_train_work), y.name="target_work")
+  # no_variance_home_cols <- columns_info_home$var[columns_info_home$lev == 1]
+  # no_variance_work_cols <- columns_info_work$var[columns_info_work$lev == 1]
+  # predictors <- setdiff(predictors, c(no_variance_home_cols,no_variance_work_cols))
+  # 
+  # predictors <- unique(c(factors,top_50_home_predictors, top_50_work_predictors))
   
 
-
+  
 
   
 
