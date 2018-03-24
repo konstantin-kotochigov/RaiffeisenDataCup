@@ -1,119 +1,125 @@
-# Enrich data with distance-based attributes
-
-# Generate distnace-based features For both Train and Test
-
+  # Enrich data with distance-based attributes
   
-  # List of customers to use (all train + test)
-  
-  raw_customers <- unique(df$customer_id)
-  
-  # Import libraries
-
-    library(fpc)
-    library(cluster)
-    library(doMC)
-  
-  
-  # Register parallel execution
-  
-    registerDoMC(48)
-    n_threads = 48
-  
-  
-  # Result dataset
-  
-    result <- NULL
-  
-  
-  
-  p_time <- system.time(
-  
-    {  
-  
-  result <- foreach(thread = 1:n_threads, .combine=rbind) %dopar%
-  {
-    
-    # Initialize local result
-    
-      thread_result <- NULL
+  # Generate distnace-based features For both Train and Test
   
     
-    # Set size of data to process for current task
+    # List of customers to use (all train + test)
     
-      stripe = floor(length(raw_customers) / n_threads)
+    raw_customers <- unique(df$customer_id)[15001:19621]
     
-    
-    # Block start
-    
-      from_custid = (thread-1)*stripe + 1
-    
-    # Block end
-    
-      if (thread == n_threads)
-        to_custid = length(raw_customers)
-      if (thread != n_threads)
-        to_custid = min(from_custid + stripe - 1, length(raw_customers))
+    # Import libraries
+  
+      library(fpc)
+      library(cluster)
+      library(doMC)
     
     
-    # Print work distribution parameters
+    # Register parallel execution
     
-      print(paste("initializing process ",thread," from=",from_custid, " to=", to_custid, sep=""))
+      registerDoMC(48)
+      n_threads = 48
+    
+    
+    # Result dataset
+    
+      result <- NULL
+    
+    
+    
+    p_time <- system.time(
+    
+      {  
+    
+    result <- foreach(thread = 1:n_threads, .combine=rbind) %dopar%
+    {
+      
+      # Initialize local result
+      
+        thread_result <- NULL
     
       
-    
-    # Local loop
+      # Set size of data to process for current task
       
-      for (c in from_custid : to_custid)
-      {
+        stripe = floor(length(raw_customers) / n_threads)
+      
+      
+      # Block start
+      
+        from_custid = (thread-1)*stripe + 1
+      
+      # Block end
+      
+        if (thread == n_threads)
+          to_custid = length(raw_customers)
+        if (thread != n_threads)
+          to_custid = min(from_custid + stripe - 1, length(raw_customers))
+      
+      
+      # Print work distribution parameters
+      
+        print(paste("initializing process ",thread," from=",from_custid, " to=", to_custid, sep=""))
+      
         
-        # print(paste("pid=",thread, " processing customer ",c,sep=""))
-  
-        # Print every 100 customers processed
-        if (c%%200==0)
+      
+      # Local loop
+        
+        for (c in from_custid : to_custid)
         {
-  
-          Sys.sleep(20)
+          
+          # print(paste("pid=",thread, " processing customer ",c,sep=""))
+    
+          # Print every 100 customers processed
+          if (c%%20000==0)
+          {
+    
+            Sys.sleep(20)
+          }
+          
+          if (thread == 48)
+          {
+            
+            print(paste("pid ",thread," ","processing customer ",c,"\r",sep=""))
+          }
+      
+          # Customer Data
+      
+            custid = raw_customers[c]
+            current_transactions <- df[customer_id == custid,]
+            # customer_data = current_transactions
+      
+          # Process customer
+            
+            customer_data <- process_customer(current_transactions, use_additional_points=T,thread)
+      
+          
+          # If first iteration initialize dataframe struvcture
+            
+            if (is.null(thread_result))
+              thread_result <- customer_data[0==1,]
+          
+          thread_result <- rbind(thread_result, customer_data)
+          
         }
-        
-        if (thread == 1 & c%%10==0)
-        {
-          
-          print(paste("pid ",thread," ","processing customer ",c,"\r",sep=""))
-        }
+      
+      
+      # print(nrow(thread_result))
+      
+      thread_result
+      
+    }
+      
     
-        # Customer Data
+      })
     
-          custid = raw_customers[c]
-          current_transactions <- df[customer_id == custid,]
-          # customer_data = current_transactions
+    p_time
     
-        # Process customer
-          
-          customer_data <- process_customer(current_transactions)
+    result3 <- result
     
-        
-        # If first iteration initialize dataframe struvcture
-          
-          if (is.null(thread_result))
-            thread_result <- customer_data[0==1,]
-        
-        thread_result <- rbind(thread_result, customer_data)
-        
-      }
+    # result_total <- rbind(result_total, result)
     
-    
-    # print(nrow(thread_result))
-    
-    thread_result
-    
-  }
-    
+    # result <- result_total
+      
+    # write.csv(result, "output/raiff_attrs.csv", sep=";", row.names=F)
   
-    })
+    # system("gzip -k output/raiff_attrs.csv")
   
-  p_time
-    
-  write.csv(result, "output/raiff_attrs.csv", sep=";", row.names=F)
-
-  system("gzip -k output/raiff_attrs.csv")
-

@@ -154,10 +154,10 @@
   # Alogirithm2: CatBoost
   
   catboost_param_grid = expand.grid(
-    depth=c(10),
+    depth=c(12),
     iterations=c(1000),
     ignored_features=c(1000),
-    border_count=c(16,32),
+    border_count=c(32),
     l2_leaf_reg = c(10),
     # eval_metric=c("Accuracy","AUC"),
     loss_function=c("Logloss")
@@ -165,8 +165,8 @@
   
   require(doMC)
   
-  registerDoMC(12)
-  cv_sets = 12
+  registerDoMC(4)
+  cv_sets = 4
   
   catboost_param_grid$home_accuracy <- NA
   catboost_param_grid$work_accuracy <- NA
@@ -189,10 +189,10 @@
       loss_function = params$loss_function,
       border_count = params$border_count,
       depth = params$depth,
-      use_best_model = TRUE,
+      use_best_model = F,
       learning_rate = 0.03,
       metric_period=1000,
-      thread_count=ifelse(cv_sets==1,-1,4),
+      thread_count=ifelse(cv_sets==1,-1,12),
       l2_leaf_reg = params$l2_leaf_reg)
     
     # Init data to store performance between CV runs
@@ -211,7 +211,7 @@
       
       # Generate CV datasets
       
-        datasets <- createTrainTest(0.8)
+        datasets <- createTrainTest(0.75)
         result_train_train_home <- datasets$train_home
         result_train_train_work <- datasets$train_work
         result_train_validate_home <- datasets$validate_home
@@ -643,23 +643,28 @@
     return (top_scores[,.(customer_id, pred_lat, pred_lon)])
   
   }
+  
+  result_train$score_home <- catboost.predict(catboost_model_home, catboost_train, prediction_type = "Probability")
+  result_train$score_work <- catboost.predict(catboost_model_work, catboost_train, prediction_type = "Probability")
+  
+  result_train_ordered_home <- result_train[order(customer_id,-score_home),]
+  result_train_ordered_work <- result_train[order(customer_id,-score_work),]
     
-    
-  averaged_home <- get_averaged_prediction(result_train_validate_home, 0.03)
-  averaged_work <- get_averaged_prediction(result_train_validate_work, 0.03)
+  averaged_home <- get_averaged_prediction(result_train_ordered_home, 0.03)
+  averaged_work <- get_averaged_prediction(result_train_ordered_work, 0.03)
   
   
   # Check performance of averaging
   
-    averaging_home_check <- merge(result_train_validate_home, averaged_home, by.x="customer_id", by.y="customer_id", all.x=T, all.y=F)
-    averaging_work_check <- merge(result_train_validate_work, averaged_work, by.x="customer_id", by.y="customer_id", all.x=T, all.y=F)
+    averaging_home_check <- merge(result_train_home[,.(head(home_orig_lat,1), head(home_orig_lon,1)),by=customer_id], averaged_home, by.x="customer_id", by.y="customer_id", all.x=T, all.y=F)
+    averaging_work_check <- merge(result_train_work[,.(head(work_orig_lat,1), head(work_orig_lon,1)),by=customer_id], averaged_work, by.x="customer_id", by.y="customer_id", all.x=T, all.y=F)
     
     averaging_home_check$home_dist <- computeDist(averaging_home_check$pred_lat, averaging_home_check$pred_lon, averaging_home_check$home_orig_lat, averaging_home_check$home_orig_lon)
     averaging_work_check$work_dist <- computeDist(averaging_work_check$pred_lat, averaging_work_check$pred_lon, averaging_work_check$work_orig_lat, averaging_work_check$work_orig_lon)
     home_accuracy <- sum(averaging_home_check$home_dist1 < 0.02) / nrow(averaging_home_check)
     work_accuracy <- sum(averaging_work_check$work_dist1 < 0.02) / nrow(averaging_work_check)
     
-    print(paste("home aacuracy = ",home_accuracy," work accuracy = ", work_accuracy, sep=""))  
+    print(paste("home accuracy = ",home_accuracy," work accuracy = ", work_accuracy, sep=""))  
   
     
     

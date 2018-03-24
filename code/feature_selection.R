@@ -2,12 +2,20 @@ require(data.table)
 library(catboost)
 
 result = fread("output/raiff_attrs.csv", sep=",", header=T)
+  
+# result <- result[is_additional_point==0,]
 
 predictors <- colnames(result)[substring(colnames(result),1,3) == "top"]
 predictors <- predictors[5:length(predictors)]
 predictors_eps <- colnames(result)[substring(colnames(result),1,3) == "eps"]
 predictors_cluster <- colnames(result)[substring(colnames(result),1,7) == "cluster"]
-predictors <- c(predictors, predictors_eps, predictors_cluster,  c("is_moscow","is_piter","is_other","center.dist","size_x","size_y","city_group",
+predictors_cell <- colnames(result)[substring(colnames(result),1,4) == "cell"]
+predictors <- c(
+  predictors, 
+  predictors_eps, 
+  predictors_cluster, 
+  predictors_cell,  
+  c("is_moscow","is_piter","is_other","center_dist","size_x","size_y","city_group",
                               "pos_amount",
                               "pos_amount_avg",
                               "pos_amount_cnt",
@@ -48,8 +56,9 @@ predictors <- c(predictors, predictors_eps, predictors_cluster,  c("is_moscow","
                               "mcc",
                               "is_atm",
                               "cluster_mean_lat",
-                              "cluster_mean_lon"
-                              # "pos_atm_cell"
+                              "cluster_mean_lon",
+                              "is_additional_point","dist_to_real_transaction"
+                              #"pos_atm_cell"
                              
 ))
 predictors <- unique(predictors)
@@ -146,7 +155,7 @@ result$mcc_group <- group.factor(factor(result$mcc), top.values=52)
   
   }
   
-  datasets <- createTrainTest(0.8)
+  datasets <- createTrainTest(0.75)
   result_train_train_home <- datasets$train_home
   result_train_train_work <- datasets$train_work
   result_train_validate_home <- datasets$validate_home
@@ -199,8 +208,8 @@ result$mcc_group <- group.factor(factor(result$mcc), top.values=52)
   
   mcc_attribute_num <- which(predictors=="mcc")
   city_attribute_num <- which(predictors %in% c("city_group","city_group1","city_group2"))
-  cell_attribute_num <- which(predictors=="pos_atm_cell")
-  categorical_attrs = c(mcc_attribute_num,city_attribute_num,cell_attribute_num)
+  # cell_attribute_num <- which(predictors=="pos_atm_cell")
+  categorical_attrs = c(mcc_attribute_num,city_attribute_num)
 
   catboost_train_home <- catboost.load_pool(data=result_train_home[,predictors,with=F], 
                                             label = as.numeric(result_train_home$target_home)-1,

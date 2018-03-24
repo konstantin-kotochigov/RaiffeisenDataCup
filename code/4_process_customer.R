@@ -76,42 +76,95 @@ cluster_customer_transactions <- function(df)
 # A function to calcluate distance-based attributes
 # Input: customer transactions
 # Output: same transactions enriched with new attributes
-process_customer <- function(current_transactions)
+process_customer <- function(current_transactions,use_additional_points, thread)
 {
   
   require(fpc)
   
-  current_transactions$id <- as.numeric(row.names(current_transactions))
+  
   
   # toDO: compute candidatePoints
   # toDO: current_trsansaction <- rbind(current_transcations, candidatePoints)
   
-  # Compute distance matrix
   
-  transactionsDistMatrix <- as.matrix(dist(current_transactions[,.(pos_atm_orig_lat, pos_atm_orig_lon),]))
-  # ToDO: candidatesDistMatrix <- transactionsDistMatrix[,]
-  # ToDO: d <- rbind(transactionsDistMatrix, candidatesDistMatrix)
-  d <- transactionsDistMatrix
+  # Number of input transactions
+  num_points <- nrow(current_transactions)
+  
+  current_transactions$is_additional_point <- 0
+  
+  # We need new points so we use only distinct points
+  unique_points <- unique(current_transactions[,.(pos_atm_orig_lat,pos_atm_orig_lon)])
+  
+  if (use_additional_points & nrow(unique_points) > 1)
+  {
+    
+    
+    # Define number of clusters: 2,3,4 -> 1; 5,6,7,8 -> 2 and so on
+    num_clusters <- floor(nrow(unique_points) / 4 + 0.99)
+    
+    # Clusterize transaction data
+    p_clusters = cluster::pam(unique_points, k=num_clusters)
+    unique_points$additional_cluster <- p_clusters$clustering
+    
+    # Compute cluster centers and volumes
+    additional_points <- unique_points[,.(n=.N,pos_atm_orig_lat=mean(pos_atm_orig_lat),pos_atm_orig_lon=mean(pos_atm_orig_lon)),by=.(additional_cluster)]
+    
+    # Remove 1-point clusters (those points are not new)
+    additional_points <- additional_points[n>1,]
+    additional_points$is_additional_point = 1
+    num_additional_points = nrow(additional_points)
+    
+    # Delete unnecessary
+    additional_points$additional_cluster <- NULL
+    additional_points$n <- NULL
+    
+    # Setup logging for one thread
+    if (thread==48) print(paste("clusterized ",nrow(unique_points)," unique points into ",num_clusters," clusters, got ",num_additional_points," points",sep=""))
+    
+    # Add new points to the dataset
+    all_transactions<-rbind(current_transactions, additional_points, fill=T)
+  
+  }
+  if (!use_additional_points | nrow(unique_points) == 1)
+  {
+    all_transactions <- current_transactions
+    
+  }
+      
+  all_transactions$id <- as.numeric(row.names(all_transactions))
+  current_transactions$id <- as.numeric(row.names(current_transactions))
+  
+  # Compute distance matrix bewteen all transactions
+  transactionsDistMatrix <- as.matrix(dist(all_transactions[,.(pos_atm_orig_lat, pos_atm_orig_lon),]))
+  
+  # When computing stats, use only real transactions (not generated ones)
+  if (num_points > 1)
+    d <- transactionsDistMatrix[,1:num_points]
+  if (num_points == 1)
+    d <- transactionsDistMatrix
 
+  
   # Calculate neighborhood attributes
   for (j in c("any","6011","5411","5814","5812","5499","5912","5541","4111","5691","5977","5921","5999","5331","5261","5661"))
   {
-    for (z in current_transactions$id)
+    for (z in all_transactions$id)
     {
       
-          # Use transactions of particular category
+        # Select transactions of particular category (or all)
         if (j == "any")
           type_transaction_ids <- setdiff(current_transactions$id, z)
         else
           type_transaction_ids <- setdiff(current_transactions$id[current_transactions$mcc==j], z)
+        
+       
+        # Compute the number of transactions in epsilon neighborhood using distance matrix
+        all_transactions[z,paste("eps_1_cnt_",j,sep="")] <- sum(d[z,type_transaction_ids] < 0.02)
+        all_transactions[z,paste("eps_2_cnt_",j,sep="")] <- sum(d[z,type_transaction_ids] < 0.05)
+        all_transactions[z,paste("eps_3_cnt_",j,sep="")] <- sum(d[z,type_transaction_ids] < 0.10)
 
-        current_transactions[z,paste("eps_1_cnt_",j,sep="")] <- sum(d[z,type_transaction_ids] < 0.02)
-        current_transactions[z,paste("eps_2_cnt_",j,sep="")] <- sum(d[z,type_transaction_ids] < 0.05)
-        current_transactions[z,paste("eps_3_cnt_",j,sep="")] <- sum(d[z,type_transaction_ids] < 0.10)
-
-        current_transactions[z,paste("eps_1_rate_",j,sep="")] <- current_transactions[z,paste("eps_1_cnt_",j,sep=""),with=FALSE] / ncol(d)
-        current_transactions[z,paste("eps_2_rate_",j,sep="")] <- current_transactions[z,paste("eps_2_cnt_",j,sep=""),with=FALSE] / ncol(d)
-        current_transactions[z,paste("eps_3_rate_",j,sep="")] <- current_transactions[z,paste("eps_3_cnt_",j,sep=""),with=FALSE] / ncol(d)
+        all_transactions[z,paste("eps_1_rate_",j,sep="")] <- all_transactions[z,paste("eps_1_cnt_",j,sep=""),with=FALSE] / ncol(d)
+        all_transactions[z,paste("eps_2_rate_",j,sep="")] <- all_transactions[z,paste("eps_2_cnt_",j,sep=""),with=FALSE] / ncol(d)
+        all_transactions[z,paste("eps_3_rate_",j,sep="")] <- all_transactions[z,paste("eps_3_cnt_",j,sep=""),with=FALSE] / ncol(d)
 
     }
   }
@@ -123,7 +176,7 @@ process_customer <- function(current_transactions)
     for (j in c("any","6011","5411","5814","5812","5499","5912","5541","4111","5691","5977","5921","5999","5331","5261","5661"))
     {
       # print(paste("processing ",i,"_",j,"\r",sep=""))
-      for (z in current_transactions$id)
+      for (z in all_transactions$id)
       {
         
         # Use transactions of particular category
@@ -133,53 +186,48 @@ process_customer <- function(current_transactions)
           type_transaction_ids <- setdiff(current_transactions$id[current_transactions$mcc==j], z)
         
         top_n_type <- type_transaction_ids[order(d[z,type_transaction_ids])][1:i]
-        top_n_type_distance <- mean(d[z,top_n_type])
-        top_n_type_distance_max <- max(d[z,top_n_type])
+        top_n_type_distances <- d[z,top_n_type]
+        
+        if (length(top_n_type_distances) > 0)
+        {
+          top_n_type_distance <- mean(d[z,top_n_type])
+          top_n_type_distance_max <- max(d[z,top_n_type])
+        }
+        if (length(top_n_type_distances) == 0)
+        {
+          top_n_type_distance <- 2
+          top_n_type_distance_max <- 2
+        }
         
         if (j=="any")
         {
           closest_merchant_categories <- current_transactions$mcc[current_transactions$id %in% top_n_type]
-          current_transactions[z,paste("top_",i,"_6011_rate",sep="")] <- sum(closest_merchant_categories=="6011") / i
-          current_transactions[z,paste("top_",i,"_5411_rate",sep="")] <- sum(closest_merchant_categories=="5411") / i
-          current_transactions[z,paste("top_",i,"_5814_rate",sep="")] <- sum(closest_merchant_categories=="5814") / i
-          current_transactions[z,paste("top_",i,"_5812_rate",sep="")] <- sum(closest_merchant_categories=="5812") / i
-          current_transactions[z,paste("top_",i,"_5499_rate",sep="")] <- sum(closest_merchant_categories=="5499") / i
-          current_transactions[z,paste("top_",i,"_5912_rate",sep="")] <- sum(closest_merchant_categories=="5912") / i
-          current_transactions[z,paste("top_",i,"_5541_rate",sep="")] <- sum(closest_merchant_categories=="5541") / i
-          current_transactions[z,paste("top_",i,"_5691_rate",sep="")] <- sum(closest_merchant_categories=="5691") / i
-          current_transactions[z,paste("top_",i,"_5977_rate",sep="")] <- sum(closest_merchant_categories=="5977") / i
-          current_transactions[z,paste("top_",i,"_5921_rate",sep="")] <- sum(closest_merchant_categories=="5921") / i
+          all_transactions[z,paste("top_",i,"_6011_rate",sep="")] <- sum(closest_merchant_categories=="6011") / i
+          all_transactions[z,paste("top_",i,"_5411_rate",sep="")] <- sum(closest_merchant_categories=="5411") / i
+          all_transactions[z,paste("top_",i,"_5814_rate",sep="")] <- sum(closest_merchant_categories=="5814") / i
+          all_transactions[z,paste("top_",i,"_5812_rate",sep="")] <- sum(closest_merchant_categories=="5812") / i
+          all_transactions[z,paste("top_",i,"_5499_rate",sep="")] <- sum(closest_merchant_categories=="5499") / i
+          all_transactions[z,paste("top_",i,"_5912_rate",sep="")] <- sum(closest_merchant_categories=="5912") / i
+          all_transactions[z,paste("top_",i,"_5541_rate",sep="")] <- sum(closest_merchant_categories=="5541") / i
+          all_transactions[z,paste("top_",i,"_5691_rate",sep="")] <- sum(closest_merchant_categories=="5691") / i
+          all_transactions[z,paste("top_",i,"_5977_rate",sep="")] <- sum(closest_merchant_categories=="5977") / i
+          all_transactions[z,paste("top_",i,"_5921_rate",sep="")] <- sum(closest_merchant_categories=="5921") / i
         }
         
         if (is.na(top_n_type_distance)) top_n_type_distance <- 2
         if (is.na(top_n_type_distance_max)) top_n_type_distance_max <- 2
         
         attr_name <- paste("top_",i,"_",j,"_mean_distance",sep="")
-        current_transactions[z,attr_name] <- top_n_type_distance
+        all_transactions[z,attr_name] <- top_n_type_distance
 
         attr_name <- paste("top_",i,"_",j,"_max_distance",sep="")
-        current_transactions[z,attr_name] <- top_n_type_distance_max
+        all_transactions[z,attr_name] <- top_n_type_distance_max
         
       }
     }
   }
   
-  # Compute distance to Home (meaningful values for Train only)
-  current_transactions$home_dist <- sqrt((current_transactions$pos_atm_orig_lat - current_transactions$home_orig_lat)^2 + (current_transactions$pos_atm_orig_lon - current_transactions$home_orig_lon)^2)
-  nearest_point <- which.min(current_transactions$home_dist)
-  nearest_point <- ifelse(length(nearest_point)==0,0,nearest_point)
-  current_transactions$nearest_dist <- min(current_transactions$home_dist)
-  current_transactions$target_home <- ifelse(current_transactions$id == nearest_point, 1, 0)
   
-  # Compute distance to Work (meaningful values for Train only)
-  current_transactions$work_dist <- sqrt((current_transactions$pos_atm_orig_lat - current_transactions$work_lat)^2 + (current_transactions$pos_atm_orig_lon - current_transactions$work_lon)^2)
-  work_nearest_point <- which.min(current_transactions$work_dist)
-  work_nearest_point <- ifelse(length(work_nearest_point)==0,0,work_nearest_point)
-  current_transactions$work_nearest_dist <- min(current_transactions$work_dist)
-  current_transactions$target_work <- ifelse(current_transactions$id == work_nearest_point, 1, 0)
-  
-  # Compute distance from point to top city center
-  current_transactions$center.dist <- sqrt((current_transactions$pos_atm_lat-current_transactions$top_city_lat)^2+(current_transactions$pos_atm_lon - current_transactions$top_city_lon)^2)
   
   
   # ToDO: Filter outlier transactions, set their cluster to 0
@@ -205,12 +253,12 @@ process_customer <- function(current_transactions)
     # When no transactions of specific category, set clustering data to dummy values
     if (nrow(transactions_to_cluster)==0)
     {
-      current_transactions[,clustering_attr_name] <- 0
+      all_transactions[,clustering_attr_name] <- 0
       
       # Compute Distance to current cluster center
-      current_transactions[,cluster_dist_attr_name] = 2
+      all_transactions[,cluster_dist_attr_name] = 2
       
-      current_transactions[,cluster_cnt_attr_name] <- 0
+      all_transactions[,cluster_cnt_attr_name] <- 0
       
     }
     else
@@ -220,21 +268,49 @@ process_customer <- function(current_transactions)
       result <- cluster_customer_transactions(transactions_to_cluster)
     
       # Get resulting cluster number
-      current_transactions[,clustering_attr_name] <- result$cluster_id
+      all_transactions[is_additional_point==0,clustering_attr_name] <- result$cluster_id
       
-      # Merge cluster data
-      current_transactions <- merge(current_transactions, result$clusters_info, by.x=clustering_attr_name, by.y="cluster_id", all.x=T, all.y=F)
+      # Merge cluster data (for transaction points)
+      all_transactions <- merge(all_transactions, result$clusters_info, by.x=clustering_attr_name, by.y="cluster_id", all.x=T, all.y=F)
       
       # Compute distance to current cluster center
-      current_transactions[,cluster_dist_attr_name] = computeDist(current_transactions$pos_atm_lat, current_transactions$pos_atm_lon, current_transactions$cluster_mean_lat, current_transactions$cluster_mean_lon)
+      all_transactions[,cluster_dist_attr_name] = computeDist(all_transactions$pos_atm_lat, all_transactions$pos_atm_lon, all_transactions$cluster_mean_lat, all_transactions$cluster_mean_lon)
       
       # Get number of clusters
-      current_transactions[,cluster_cnt_attr_name] <- nrow(result$clusters_info)
+      all_transactions[,cluster_cnt_attr_name] <- nrow(result$clusters_info)
       
     }
   }
   
+  # When processing new points, some attributes will be transfered from nearest real point
+  features_to_ignore = c("pos_atm_orig_lat","pos_atm_orig_lon","id","is_additional_point","home_dist","work_dist","center_dist",
+  colnames(all_transactions)[substr(colnames(all_transactions),1,3)=="eps"],
+  colnames(all_transactions)[substr(colnames(all_transactions),1,3)=="top"])
+  features_to_copy = c(setdiff(colnames(all_transactions), features_to_ignore),"top","top_city","top_city_center_dist","top_city_lat","top_city_lon")
   
-  current_transactions
+  
+  all_transactions$dist_to_real_transaction <- 0
+  all_transactions$closest_real_transaction_id <- 0
+  for (z in all_transactions$id[all_transactions$is_additional_point==1])
+  {
+    closest_point_id <- which.min(d[z,])
+    all_transactions[id==z,features_to_copy] <- all_transactions[id==closest_point_id,features_to_copy,with=F]
+    all_transactions$dist_to_real_transaction[all_transactions$id==z] <- ifelse(all_transactions$is_additional_point[all_transactions$id==z]==1, min(d[z,]), 0)
+    all_transactions$closest_real_transaction_id[all_transactions$id==z] <- ifelse(all_transactions$is_additional_point[all_transactions$id==z]==1, closest_point_id, 0)
+  }
+  
+  # Compute distance to Home (NA for Test)
+  all_transactions[,home_dist := sqrt((pos_atm_orig_lat - home_orig_lat)^2 + (pos_atm_orig_lon - home_orig_lon)^2),]
+  
+  # Compute distance to Work (NA for Test and customers with no Work data)
+  all_transactions[,work_dist := sqrt((pos_atm_orig_lat - work_orig_lat)^2 + (pos_atm_orig_lon - work_orig_lon)^2),]
+  
+  # Compute distance from point to top city center
+  all_transactions[,center_dist := sqrt((pos_atm_orig_lat-top_city_lat)^2+(pos_atm_orig_lon - top_city_lon)^2),]
+  
+  
+  
+  
+  all_transactions
   
 }

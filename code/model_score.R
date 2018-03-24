@@ -3,36 +3,41 @@
 
 # Manually set best parameters
 
-  catboost_fit_params_home <- list(iterations = 1000,
-                                   thread_count = 48,
-                                   loss_function = 'Logloss',
-                                   border_count = 32,
-                                   depth = 12,
-                                   l2_leaf_reg = 10,
-                                   use_best_model = FALSE,
-                                   learning_rate = 0.03)
-  catboost_fit_params_work <- list(iterations = 1000,
-                                   thread_count = 48,
-                                   loss_function = 'Logloss',
-                                   border_count = 32,
-                                   depth = 12,
-                                   use_best_model = FALSE,
-                                   learning_rate = 0.03)
+    catboost_fit_params_home <- list(iterations = 1000,
+                                     thread_count = 96,
+                                     loss_function = 'Logloss',
+                                     border_count = 32,
+                                     depth = 12,
+                                     l2_leaf_reg = 10,
+                                     use_best_model = FALSE,
+                                     learning_rate = 0.03)
+    catboost_fit_params_work <- list(iterations = 1000,
+                                     thread_count = 96,
+                                     loss_function = 'Logloss',
+                                     border_count = 32,
+                                     depth = 12,
+                                     use_best_model = FALSE,
+                                     learning_rate = 0.03)
 
 # Build models on full train data
   
   catboost_model_home <- catboost.train(learn_pool = catboost_train_home, params = catboost_fit_params_home)
   catboost_model_work <- catboost.train(learn_pool = catboost_train_work, params = catboost_fit_params_work)
+  
+  # catboost.save_model(catboost_model_home, "models/catboost_model_home")
+  # catboost.save_model(catboost_model_work, "models/catboost_model_work")
 
 # Score Test data
 
   result_test$score_home <- catboost.predict(catboost_model_home, catboost_test, prediction_type = "Probability")
   result_test$score_work <- catboost.predict(catboost_model_work, catboost_test, prediction_type = "Probability")
+  
 
 # Order by score
 
   result_test_ordered_home <- result_test[order(customer_id,-score_home),]
   result_test_ordered_work <- result_test[order(customer_id,-score_work),]
+  
 
 
 # Make predictions
@@ -89,11 +94,15 @@
   result_test$score_home1 <- catboost.predict(catboost_model_home, catboost_test, prediction_type = "Probability")
   result_test$score_work1 <- catboost.predict(catboost_model_work, catboost_test, prediction_type = "Probability")
   
+  write.csv(result_test, "output/result_test_1.csv", sep=";", row.names=F, col.names=T)
+  
   catboost_model_home <- catboost.train(learn_pool = catboost_train_home, params = catboost_fit_params_home)
   catboost_model_work <- catboost.train(learn_pool = catboost_train_work, params = catboost_fit_params_work)
   
   result_test$score_home2 <- catboost.predict(catboost_model_home, catboost_test, prediction_type = "Probability")
   result_test$score_work2 <- catboost.predict(catboost_model_work, catboost_test, prediction_type = "Probability")
+  
+  write.csv(result_test, "output/result_test_2.csv", sep=";", row.names=F, col.names=T)
   
   catboost_model_home <- catboost.train(learn_pool = catboost_train_home, params = catboost_fit_params_home)
   catboost_model_work <- catboost.train(learn_pool = catboost_train_work, params = catboost_fit_params_work)
@@ -101,11 +110,34 @@
   result_test$score_home3 <- catboost.predict(catboost_model_home, catboost_test, prediction_type = "Probability")
   result_test$score_work3 <- catboost.predict(catboost_model_work, catboost_test, prediction_type = "Probability")
   
-  result_test$score_home <- mean(result_test$score_home1, result_test$score_home2, result_test$score_home3)
-  result_test$score_work <- mean(result_test$score_work1, result_test$score_work2, result_test$score_work3)
+  write.csv(result_test, "output/result_test_3.csv", sep=";", row.names=F, col.names=T)
+  
+  catboost_model_home <- catboost.train(learn_pool = catboost_train_home, params = catboost_fit_params_home)
+  catboost_model_work <- catboost.train(learn_pool = catboost_train_work, params = catboost_fit_params_work)
+  
+  result_test$score_home4 <- catboost.predict(catboost_model_home, catboost_test, prediction_type = "Probability")
+  result_test$score_work4 <- catboost.predict(catboost_model_work, catboost_test, prediction_type = "Probability")
+  
+  write.csv(result_test, "output/result_test_4.csv", sep=";", row.names=F, col.names=T)
+  
+  catboost_model_home <- catboost.train(learn_pool = catboost_train_home, params = catboost_fit_params_home)
+  catboost_model_work <- catboost.train(learn_pool = catboost_train_work, params = catboost_fit_params_work)
+  
+  result_test$score_home5 <- catboost.predict(catboost_model_home, catboost_test, prediction_type = "Probability")
+  result_test$score_work5 <- catboost.predict(catboost_model_work, catboost_test, prediction_type = "Probability")
+  
+  write.csv(result_test, "output/result_test_5.csv", sep=";", row.names=F, col.names=T)
+  
+  result_test$score_home <- (result_test$score_home1 + result_test$score_home2 + result_test$score_home3 + result_test$score_home4 + result_test$score_home5) / 5
+  result_test$score_work <- (result_test$score_work1 + result_test$score_work2 + result_test$score_work3 + result_test$score_work4 + result_test$score_work5) / 5
+  
+  write.csv(result_test[,.(customer_id,pos_atm_orig_lat,pos_atm_orig_lon,score_home,score_work)], "output/result_test.csv",sep=";",row.names=F,col.names=T)
   
   result_test_ordered_home <- result_test[order(customer_id,-score_home),]
   result_test_ordered_work <- result_test[order(customer_id,-score_work),]
+  
+  pred_test_home <- get_averaged_prediction(result_test_ordered_home, 0.03)
+  pred_test_work <- get_averaged_prediction(result_test_ordered_work, 0.03)
   
   pred_test_home <- result_test_ordered_home[,head(.SD,1),by=.(customer_id)][,c("customer_id","pos_atm_orig_lat","pos_atm_orig_lon")]
   pred_test_work <- result_test_ordered_work[,head(.SD,1),by=.(customer_id)][,c("customer_id","pos_atm_orig_lat","pos_atm_orig_lon")]
@@ -115,7 +147,7 @@
   # Check number of customers
   length(unique(pred$customer_id))
   
-  write.csv(pred, "output/pred.csv", sep=",", row.names = F, col.names = T, quote=F)
+  write.csv(pred, "output/pred_no_avg.csv", sep=",", row.names = F, col.names = T, quote=F)
   
   
 
