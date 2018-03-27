@@ -1,0 +1,294 @@
+code,category_eng,category_rus
+0742, Veterinary Services ,Ветеринарные услуги)
+0763, Agricultural Cooperative ,Сельско-хозяйственные кооперативные общества)
+0780, Landscaping Services ,Ландшафтные и садоводческие магазины)
+1520, General Contractors ,Генеральные подрядчики – жилищное и торговое строительство)
+1711," Heating, Plumbing, A/C ","Генеральные подрядчики по вентиляции,  теплоснабжению, и водопроводу)"
+1731, Electrical Contractors ,Подрядчики по электричеству)
+1740," Masonry, Stonework, and Plaster ","Изоляция, мозаика, штукатурные работы, каменная кладка, облицовка плиткой, кафелем)"
+1750, Carpentry Contractors ,Подрядчики плотничных работ)
+1761," Roofing/Siding, Sheet Metal ","Кровельные и  работы, наружная обшивка стен, подрядчики жестяницких работ)"
+1771, Concrete Work Contractors ,Подрядчики бетонных работ)
+1799, Special Trade Contractors ,"Подрядчики, специализированная торговля – нигде более не классифицированные)"
+2741, Miscellaneous Publishing and Printing ,Разнообразные издательства/ пе-чатное дело)
+2791," Typesetting, Plate Making, and Related Services ","Набор текстов, шрифтов, таблиц и относящиеся к этому услуги)"
+2842, Specialty Cleaning ,"Специальная обработка, полировка, санитария)"
+3000,-3299 Airlines ,"Авиалинии, авиакомпании)"
+3351,-3441 Car Rental ,Агентства по аренде автомобилей)
+3501,-3790 Hotels/Motels/Inns/Resorts ,"Жилье – отели, мотели, курорты)"
+4011, Railroads No1.6041-3© ,Железные дороги – перевозка грузов)
+4111," Commuter Transport, Ferries ","Транспортировка – пригородные и локальные сезонные транспортные средства, включая электрички)"
+4112, Passenger Railways ,пассажирские железные перевозки)
+4119, Ambulance Services ,Служба скорой помощи)
+4121, Taxicabs/Limousines ,Лимузины и такси)
+4131, Bus Lines ,Автобусные линии)
+4214," Motor Freight Carriers and Trucking – Local and Long Distance, Moving and Storage Companies, and Local Delivery Services No1.6041-3 ","Агентства по автотранспортным перевозкам, местные/дальные автогрузоперевоз-ки, компании попереезду и хранению, местная доставка)"
+4215, Courier Services ,"Услуги курьера – по воздуху и на земле, агентство по отправке грузов)"
+4225," Public Warehousing and Storage – Farm Products, Refrigerated Goods, Household Goods, and Storage No1.6041-3 ","Складское хранение общественного пользования –сельскохозяйственных продуктов, охлаждаемые продукты, хранение )"
+4411, Cruise Lines ,Круизные линии)
+4457, Boat Rentals and Leases ,Аренда и наем суден)
+4468," Marinas, Service and Supplies ","Пристани для яхт, их обслуживание и поставка)"
+4511," Airlines, Air Carriers ","Авиалинии, авиакомпании – нигде более не классифицированные)"
+4582," Airports, Flying Fields ","Аэропорты, терминалы аэропортов, лётные поля)"
+4722," Travel Agencies, Tour Operators ",Туристические агентства и организаторы экскурсий)
+4723, TUI Travel – Germany, TUI Travel – Germany
+4784, Tolls/Bridge Fees No1.6041-3 ,"Дорожный и мостовой сборы, пошлины)"
+4789, Transportation Services ,Услуги по транспортировке – нигде более не классифицированные)
+4812, Telecommunication Equipment and Telephone Sales No1.6041-3©, Telecommunication Equipment and Telephone Sales No1.6041-3©
+(Тел,"екоммуникационное оборудование, включая продажу телефонов","екоммуникационное оборудование, включая продажу телефонов"
+4813, Telecommunication Equipment and Telephone Sales ,"Торговые точки Телеком клавишного ввода, предлагающие единичные локальные и дальние телефонные звонки, используя центральный номер доступа без разговора с оператором и используя код доступа)"
+4814, Telecommunication Services No1.6041-3 ,"Звонки с использованием телефонов, считывающих магнитную ленту, “телекоммуникационные услуги”)."
+4816, Computer Network Services No1.6041-3 ,Компьютерная сеть/ информационные услуги)
+4821, Telegraph Services No1.6041-3 ,Услуги телеграфа)
+4829," Wires, Money Orders No1.6041-3 ","Денежные переводы), (покупка валюты, дорожных чеков, переводы с карты на другую карту или счет, не в финансовых учреждениях – через интернет, банкомат, “квази-кэш”, можно попасть на комиссию и/или даже вылететь и грейс-периода для кредиток)"
+4899," Cable, Satellite, and Other Pay Television and Radio No1.6041-3 ",Кабельные и другие платные телевизионные услуги)
+4900, Utilities No1.6041-3 ,"Коммунальные услуги – электричество, газ, санитария, вода)"
+5013, Motor Vehicle Supplies and New Parts No1.6041-3 ,Поставщики грузовиков и запчастей)
+5021, Office and Commercial Furniture No1.6041-3 ,Офисная и торговая мебель)
+5039, Construction Materials ,Not Elsewhere Classified) No1.6041-3 (Строительные материалы – нигде более не классифицированные)
+5044," Photographic, Photocopy, Microfilm Equipment, and Supplies No1.6041-3 ","Офисное, фотографическое, фотокопировальное, и микрофильмирующее оборудование)"
+5045," Computers, Peripherals, and Software No1.6041-3","Компьютеры, периферийное компьютерное оборудование, программное обеспечение)"
+5046, Commercial Equipment ,"Not Elsewhere Classified) No1.6041-3 (Коммерческое оборудование – нигде более не классифицированное)5047 Medical, Dental, Ophthalmic, and Hospital Equipment and Supplies No1.6041-3 (Стоматологическое/лабораторное/медицинское/офтальмологическое стационарное оборудование и устройства)"
+5051, Metal Service Centers No1.6041-3 ,Центры и офисы работ по металлу)
+5065, Electrical Parts and Equipment No1.6041-3 ,Электрические части и оборудование)
+5072," Hardware, Equipment, and Supplies No1.6041-3 ",Оборудование и сопутствующие материалы для технического обеспечения)
+5074," Plumbing, Heating Equipment, and Supplies No1.6041-3 ",Оборудование для водопровода и отопительной системы)
+5085, Industrial Supplies ,Not Elsewhere Classified) No1.6041-3 (Промышленное оборудование –нигде более не классифицированное)
+5094," Precious Stones and Metals, Watches and Jewelry No1.6041-3 ","Драгоценные камни и металлы, часы и ювелирные изделия)"
+5099, Durable Goods ,Not Elsewhere Classified) No1.6041-3 (Товары длительного пользования – нигде более не классифицированные)
+5111," Stationary, Office Supplies, Printing and Writing Paper No1.6041-3 ","Канцелярия, офисные сопутствующие товары, бумага для печатания и письма)"
+5122," Drugs, Drug Proprietaries, and Druggist Sundries No1.6041-3 ","Лекарства, их распространители, аптеки)"
+5131," Piece Goods, Notions, and Other Dry Goods No1.6041-3 ","Штучные товары, галантерея и другие текстильные товары)"
+5137," Uniforms, Commercial Clothing No1.6041-3 ","Мужская, женская и детская спец-одежда)"
+5139, Commercial Footwear No1.6041-3 ,Спец-обувь)
+5169, Chemicals and Allied Products ,"Not Elsewhere Classified) No1.6041-3 (Химикалии и смежные вещества, не классифицированные ранее)"
+5172, Petroleum and Petroleum Products No1.6041-3 ,Нефть и нефтепродукты)
+5192," Books, Periodicals, and Newspapers No1.6041-3 ","Книги, периодические издания и газеты)"
+5193," Florists Supplies, Nursery Stock, and Flowers No1.6041-3 ","Оборудование для выращивания растений, инвентарь для питомников и цветы)"
+5198," Paints, Varnishes, and Supplies No1.6041-3 ",Лакокрасочная продукция и сопровождающие товары)
+5199, Nondurable Goods ,"Not Elsewhere Classified) No1.6041-3 (Товары недлительного пользования, не классифицированные  ранее)"
+5200, Home Supply Warehouse Stores No1.6041-3,Товары для дома)
+5211," Lumber, Building Materials Stores No1.6041-3 ",Лесо- и строительный материал)
+5231," Glass, Paint, and Wallpaper Stores No1.6041-3 ","Розничная продажа стекла, красок и обоев)"
+5251, Hardware Stores No1.6041-3 ,Скобяные товары в розницу)
+5261," Nurseries, Lawn and Garden Supply Stores No1.6041-3 ",Садовые принадлежности (в том числе для ухода за газонами) в розницу)
+5271, Mobile Home Dealers No1.6041-3 ,Продажа жилых фургонов)
+5300, Wholesale Clubs No1.6041-3 ,Оптовики)
+5309, Duty Free Stores No1.6041-3 ,Беспошлинные магазины Duty Free)
+5310, Discount Stores No1.6041-3 ,"Магазины, торгующие по сниженным ценам)"
+5311, Department Stores No1.6041-3 ,Универмаги)
+5331, Variety Stores No1.6041-3 ,Универсальные магазины)
+5399, Miscellaneous General Merchandise No1.6041-3 ,Различные товары общего назначения)
+5411," Grocery Stores, Supermarkets No1.6041-3 ","Бакалейные магазины, супермаркеты)"
+5422, Freezer and Locker Meat Provisioners No1.6041-3 ,Продажа свежего и мороженого  мяса)
+5441," Candy, Nut, and Confectionery Stores No1.6041-3 ",Кондитерские)
+5451, Dairy Products Stores No1.6041-3 ,Продажа молочных продуктов в розницу)
+5462, Bakeries No1.6041-3 ,Булочные)
+5499, Miscellaneous Food Stores – Convenience Stores and Specialty Markets No1.6041-3 ,"Различные продовольственные магазины – рынки, магазины со спец. ассортиментом, продажа полуфабрикатов, фирменных блюд, продажа с помощью торговых автоматов.)"
+5511, Car and Truck Dealers ,"New & Used) Sales, Service, Repairs Parts and Leasing No1.6041-3 (Легковой и грузовой транспорт – продажа, сервис, ремонт, запчасти и лизинг)"
+5521, Car and Truck Dealers ,"Used Only) Sales, Service, Repairs Parts and Leasing No1.6041-3 (Продажа легковых и грузовых автомобилей (только подержанных))"
+5531, Auto and Home Supply Stores No1.6041-3 ,Автомагазины и товары для дома)
+5532, Automotive Tire Stores No1.6041-3 ,Автошины)
+5533, Automotive Parts and Accessories Stores No1.6041-3 ,Автозапчасти и аксессуары)
+5541, Service Stations No1.6041-3 ,Станции техобслуживания (с дополнительными услугами или без))
+5542, Automated Fuel Dispensers No1.6041-3 ,Автоматизированные бензозаправки)
+5551, Boat Dealers No1.6041-3 ,Продажа лодок)
+5561," Motorcycle Shops, Dealers No1.6041-3 ","Дома-автоприцепы, жилые неразборные и грузовые прицепы)"
+5571, Motorcycle Shops and Dealers No1.6041-3 ,Продажа мотоциклов)
+5592, Motor Homes Dealers No1.6041-3 ,Продажа домов на колесах)
+5598, Snowmobile Dealers No1.6041-3 ,Продажа снегоходов)
+5599, Miscellaneous Auto Dealers No1.6041-3 ,"Продажа различного рода автомобилей, авиа- и с/х оборудования, не классифицированные ранее)"
+5611, Men’s and Boy’s Clothing and Accessories Stores No1.6041-3 ,"Мужская одежда и аксессуары, включая одежду для мальчиков)"
+5621, Women’s Ready-To-Wear Stores No1.6041-3 ,Готовая женская одежда)
+5631, Women’s Accessory and Specialty Shops No1.6041-3 ,Аксессуары для женщин)
+5641, Children’s and Infant’s Wear Stores No1.6041-3 ,"Детская одежда, включая одежду для самых маленьких)"
+5651, Family Clothing Stores No1.6041-3 ,Одежда для всей семьи)
+5655, Sports and Riding Apparel Stores No1.6041-3 ,"Спортивная одежда, одежда для верховой езды и езды на мотоцикле)"
+5661, Shoe Stores No1.6041-3 ,Обувные магазины)
+5681, Furriers and Fur Shops No1.6041-3 ,Изготовление и продажа меховых изделий)
+5691," Men’s, Women’s Clothing Stores No1.6041-3 ",Магазины мужской и женской одежды)
+5697," Tailors, Alterations ","Услуги по переделке, починке и пошиву одежды)"
+5698, Wig and Toupee Stores No1.6041-3 ,Парики и накладки из искусственных волос)
+5699, Miscellaneous Apparel and Accessory Shops No1.6041-3 ,Различные магазины одежды и аксессуаров)
+5712," Furniture, Home Furnishings, and Equipment Stores, Except Appliances No1.6041-3 ","Оборудование, мебель и бытовые принадлежности (кроме электрооборудования))"
+5713, Floor Covering Stores No1.6041-3 ,Покрытия для пола)
+5714," Drapery, Window Covering, and Upholstery Stores No1.6041-3 ","Ткани, обивочный материал, гардины и портьеры, жалюзи)"
+5718," Fireplace, Fireplace Screens, and Accessories Stores No1.6041-3 ","Продажа каминов, экранов для каминов и аксессуаров)"
+5719, Miscellaneous Home Furnishing Specialty Stores No1.6041-3 ,Различные специализированные магазины бытовых принадлежностей)
+5722, Household Appliance Stores No1.6041-3 ,Бытовое оборудование)
+5732, Electronics Stores No1.6041-3 ,Продажа электронного оборудования)
+5733," Music Stores-Musical Instruments, Pianos, and Sheet Music No1.6041-3 ","Продажа музыкальных инструментов, фортепиано, нот.)"
+5734, Computer Software Stores No1.6041-3 ,Продажа компьютерного программного обеспечения)
+5735, Record Stores No1.6041-3 ,Магазины звукозаписи)
+5811, Caterers ,Поставщики провизии)
+5812," Eating Places, Restaurants No1.6041-3 ","Места общественного питания, рестораны)"
+5813, Drinking Places No1.6041-3 ,"Бары, коктейль-бары, дискотеки, ночные клубы и таверны – места продажи алкогольных напитков)"
+5814, Fast Food Restaurants No1.6041-3 ,Рестораны-закусочные)
+5816, Digital Goods: Games ,комм. – код был замечен в PlayStationNetwork)
+5912, Drug Stores and Pharmacies No1.6041-3 ,Аптеки)
+5921," Package Stores-Beer, Wine, and Liquor No1.6041-3 ","Магазины с продажей спиртных напитков навынос(пиво, вино и ликер))"
+5931, Used Merchandise and Secondhand Stores No1.6041-3 ,Магазины secondHand
+5932, Antique Shops No1.6041-3 ,"Антикварные Магазины – Продажа, Ремонт и услуги восстановления)"
+5933, Pawn Shops No1.6041-3 ,Ломбарды)
+5935, Wrecking and Salvage Yards ,Магазины сбора и использования утиль сырья (переработанной продукции или брака))
+5937, Antique Reproductions No1.6041-3 ,Магазины продажи репродукций и антиквариата)
+5940, Bicycle Shops No1.6041-3 ,Веломагазины – Продажа и Обслуживание)
+5941, Sporting Goods Stores No1.6041-3 ,Магазины Спорттоваров)
+5942, Book Stores No1.6041-3 ,Книжные магазины)
+5943," Stationery Stores, Office, and School Supply Stores No1.6041-3 ","Магазины офисных, школьных принадлежностей,"
+5944," Jewelry Stores, Watches, Clocks, and Silverware Stores No1.6041-3 ","Магазины по продаже часов, ювелирных изделий и изделий из серебра)"
+5945," Hobby, Toy, and Game Shops No1.6041-3 ",Магазины игрушек)
+5946, Camera and Photographic Supply Stores No1.6041-3 ,Магазины фотооборудования и фотоприборов)
+5947," Gift, Card, Novelty, and Souvenir Shops No1.6041-3 ","Магазины открыток, подарков, новинок и сувениров)"
+5948, Luggage and Leather Goods Stores No1.6041-3 ,"Магазины кожаных изделий, дорожных принадлежностей)"
+5949," Sewing, Needlework, Fabric, and Piece Goods Stores No1.6041-3 ","Магазины ткани, ниток рукоделия, шитья)"
+5950," Glassware, Crystal Stores No1.6041-3 ",Магазины хрусталя и изделий из стекла)
+5960, Direct Marketing – Insurance Services ,Прямой маркетинг – услуги по страхованию)
+5962, Direct Marketing – Travel ,"Прямой маркетинг – услуги, относящиеся к туризму)"
+5963, Door-To-Door Sales No1.6041-3 ,Распродажа из рук в руки (вразнос))
+5964, Direct Marketing – Catalog Merchant No1.6041-3 ,Прямой маркетинг – торговля по каталогам)
+5965, Direct Marketing – Combination Catalog and Retail Merchant No1.6041-3 ,Прямой маркетинг – комбинированный каталог и торговцы в розницу)
+5966, Direct Marketing – Outbound Tele No1.6041-3 ,Прямой маркетинг – исходящий телемаркетинг)
+5967, Direct Marketing – Inbound Tele No1.6041-3 ,Прямой маркетинг – входящий телемаркетинг)
+5968, Direct Marketing – Subscription No1.6041-3 ,Прямой маркетинг – Торговые точки подписки)
+5969, Direct Marketing – Other No1.6041-3 ,Прямой маркетинг – другие торговые точки прямого маркетинга (нигде более не классифицированные))
+5970, Artist’s Supply and Craft Shops No1.6041-3 ,Магазины художественных и ремесляных изделий)
+5971, Art Dealers and Galleries No1.6041-3 ,Галереи и художественные посредники)
+5972, Stamp and Coin Stores No1.6041-3 ,Магазины монет и марок (филателические и нумизматические))
+5973, Religious Goods Stores No1.6041-3 ,Магазины религиозных товаров)
+5975, Hearing Aids Sales and Supplies No1.6041-3 ,"Слуховые аппараты – распродажа, услуги, магазины)"
+5976, Orthopedic Goods – Prosthetic Devices No1.6041-3 ,Ортопедические товары)
+5977, Cosmetic Stores No1.6041-3 ,Магазины косметики)
+5978, Typewriter Stores No1.6041-3 ,"Магазины печатающих устройств – аренда, распродажа, услуги)"
+5983, Fuel Dealers ,"Non Automotive) No1.6041-3 (Горючее топливо – уголь, нефть, разжиженный бензин, дрова)"
+5992, Florists No1.6041-3 ,Флористика)
+5993, Cigar Stores and Stands No1.6041-3 ,Табачные магазины)
+5994, News Dealers and Newsstands No1.6041-3 ,Дилеры по продаже печатной продукции)
+5995," Pet Shops, Pet Food, and Supplies No1.6041-3 ",Зоомагазины)
+5996, Swimming Pools Sales No1.6041-3 ,Плавательные бассейны – Распродажа )
+5997, Electric Razor Stores No1.6041-3 ,Магазины электрических бритвенных принадлежностей – распродажа и услуги.)
+5998, Tent and Awning Shops No1.6041-3 ,Магазины палаток и навесов)
+5999, Miscellaneous Specialty Retail No1.6041-3 ,Различные магазины и специальные розничные магазины)
+6010, Manual Cash Disburse No1.6041-3 ,Финансовые институты – снятие наличности вручную)
+6011, Automated Cash Disburse No1.6041-3 ,Финансовые институты – снятие наличности автоматически)
+6012, Financial Institutions ,Финансовые институты – торговля и услуги)
+6051," Foreign Currency,Money,Tc`S. Non-FI, Money Orders No1.6041-3."," Foreign Currency,Money,Tc`S. Non-FI, Money Orders No1.6041-3."
+6211, Security Brokers/Dealers ,Ценные бумаги– Брокеры/Дилеры)
+6300," Insurance Underwriting, Premiums No1.6041-3 ","Продажа страхования, гарантированное размещение, премии)"
+6399, Insurance – Default No1.6041-3©, Insurance – Default No1.6041-3©
+6513, Real Estate Agents and Managers – Rentals, Real Estate Agents and Managers – Rentals
+6536,MasterCard MoneySend,денежные переводы MasterCard MoneySend
+6537,MasterCard MoneySend,денежные переводы MasterCard MoneySend
+6538,MasterCard MoneySend,денежные переводы MasterCard MoneySend
+6540, – POI Funding Transactions ,Excluding MasterCard MoneySend)
+7011," Hotels, Motels, and Resorts"," Hotels, Motels, and Resorts"
+7012, Timeshares, Timeshares
+7032, Sporting/Recreation Camps, Sporting/Recreation Camps
+7033," Trailer Parks, Campgrounds"," Trailer Parks, Campgrounds"
+7210," Laundry, Cleaning Services"," Laundry, Cleaning Services"
+7211, Laundries, Laundries
+7216, Dry Cleaners, Dry Cleaners
+7217, Carpet/Upholstery Cleaning, Carpet/Upholstery Cleaning
+7221, Photographic Studios, Photographic Studios
+7230, Barber and Beauty Shops, Barber and Beauty Shops
+7251, Shoe Repair/Hat Cleaning, Shoe Repair/Hat Cleaning
+7261," Funeral Services, Crematories"," Funeral Services, Crematories"
+7273, Dating/Escort Services, Dating/Escort Services
+7276, Tax Preparation Services, Tax Preparation Services
+7277, Counseling Services, Counseling Services
+7278, Buying/Shopping Services ,Клубы оказывающие сервис по покупке)
+7296, Clothing Rental ,"Сдача в аренду костюмов, униформы, простой одежды)"
+7297, Massage Parlors ,Массажная приемная)
+7298, Т.н. клубы здоровья ,"Точки, которые специализируются на разнообразных терапевтических услугах, дневного стационара. В спектр услуг входят массаж, массаж лица, грязевые ванны, травяные, бассейны, воздушные ванны, персональные программы, советы диетолога, консультации специалиста по уходу за волосами, аэробика, шейпинг, контроль за весом и т.п. )"
+7299, Miscellaneous General Services ,Иной сервис)
+7311, Advertising Services ,Рекламные услуги)
+7321, Credit Reporting Agencies ,Агентства по составлению отчетов потребительских долгов)
+7333," Commercial Photography, Art and Graphics ","Коммерческая графика, фотографии)"
+7338," Quick Copy, Repro, and Blueprint ",Услуги копировальных центров)
+7339, Secretarial Support Services ,Услуги стенографии и секретарского дела)
+7342, Exterminating Services ,Истребление насекомых и дезинфекция)
+7349, Cleaning and Maintenance ,Уборка и чистка помещений)
+7361, Employment/Temp Agencies ,Центры занятости)
+7372, Computer Programming ,"Программирование, обработка данных, интегрированные системы, дизайн)"
+7375, Information Retrieval Services ,Информационные провайдеры)
+7379, Computer Repair ,Ремонт и техническое обслуживание компьютерной техники)
+7392," Consulting, Public Relations ","Консультация, мэнеджмент, паблик-рилэйшн услуги)"
+7393, Detective Agencies ,"Детективные, охранные агенства, вкл. бронированные автомобили и сторожевых собак)"
+7394, Equipment Rental ,"Сдача в аренду оборудования, мебели, инструментов)"
+7395, Photo Developing ,"Фотостудии, фотолаборатории)"
+7399, Miscellaneous Business Services ,Бизнес – сервис)
+7511, Truck Stop, Truck Stop
+7512, Car Rental Agencies ,Прокат автомобилей)
+7512, Прокат автомобилей, Прокат автомобилей
+7513, Truck/Utility Trailer Rentals ,Прокат аксессуаров для трэйлеров и грузовиков)
+7519, Recreational Vehicle Rentals ,"Прокат домиков на колесах, аксессуары к наземному транспорту)"
+7523," Parking Lots, Garages ",Паркинги и гаражи)
+7531, Auto Body Repair Shops ,Станции технического обслуживания для автомобильного транспорта)
+7534, Tire Retreading and Repair ,Шиномонтаж и вулканизация)
+7535, Auto Paint Shops ,Покраска автомобилей)
+7538, Auto Service Shops ,СТО общего назначения.)
+7542, Car Washes ,Автомойки)
+7549, Towing Services ,Буксировка)
+7622, Electronics Repair Shops ,Ремонт электроники)
+7623," A/C, Refrigeration Repair ",Ремонт и запрака кондиционеров и холодильников)
+7629, Small Appliance Repair ,Ремонт бытовой техники. Ремонт электроприборы)
+7631, Watch/Jewelry Repair ,Центры ремонта часов и чистки ювелирных изделий)
+7641," Furniture Repair, Refinishing ","Мебель – обивка, ремонт и реставрация)"
+7692, Welding Repair ,Ремонт с помощью сварки)
+7699, Miscellaneous Repair Shops ,Общий ремонт)
+7829, Picture/Video Production ,Производство и дистрибуция видеофильмов)
+7832, Motion Picture Theaters ,Кинотеатры)
+7841, Video Tape Rental Stores ,Видеопрокат)
+7911," Dance Hall, Studios, Schools ","Танцклубы, танцшколы и студии)"
+7922, Theatrical Ticket Agencies ,Театральные продюссерские агенства)
+7929," Bands, Orchestras ","Музыкальные группы, оркестры и прочие развлекательные услуги)"
+7932, Billiard/Pool Establishments ,Билльярд-клубы)
+7933, Bowling Alleys ,Боулинг-клубы)
+7941, Sports Clubs/Fields ,"Спортивные поля, Коммерческие Спортивные состязания, Профессиональные Спортивные Клубы, Спортивные Промоутеры)"
+7991, Tourist Attractions and Exhibits ,Туристические аттракционы и шоу)
+7992, Golf Courses – Public ,"Поля для гольфа, Публичные)"
+7993, Video Amusement Game Supplies No1.6041-3 ,Принадлежности для Видеоигр)
+7994, Video Game Arcades ,Галереи/ учреждения Видеоигр)
+7995, Betting/Casino Gambling ,"Транзакции по Азартным играм, казино (в том, числе интернет))"
+7996, Amusement Parks/Carnivals ,"Луна-парки, Карнавалы, Цирки, Предсказатели будущего)"
+7997, Country Clubs ,"Клубы — Сельские клубы, Членство (Спортивный, Отдых, Спорт), Частные Поля для гольфа )"
+7998, Aquariums ,"Аквариумы, Дельфинариумы, Зверинцы, и Морские парки)"
+7999, Miscellaneous Recreation Services ,Услуги Отдыха — нигде ранее не классифицируемые)
+8011, Doctors ,Доктора — нигде ранее не классифицируемые)
+8021," Dentists, Orthodontists ","Дантисты, ортодантисты)"
+8031, Osteopaths ,"Osteopathic врачи, терапевты)"
+8041, Chiropractors ,Хиропрактики)
+8042," Optometrists, Ophthalmologist ","Оптометристы, офтальмологи )"
+8043," Opticians, Eyeglasses ","Оптика, Оптические Товары, и Очки)"
+8049," Chiropodists, Podiatrists ",Ортопеды)
+8050, Nursing/Personal Care ,Уход и Средства Персонального обслуживания)
+8062, Hospitals ,Больницы)
+8071, Medical and Dental Labs ,Зубные и Медицинские Лаборатории)
+8099, Medical Services ,"Практикующие врачи, Медицинские Услуги — нигде ранее не классифицируемые )"
+8111," Legal Services, Attorneys ","Адвокаты, Юридические Услуги)"
+8211," Elementary, Secondary Schools No1.6041-3","p)(2) (Школы, Начальная и Средняя)"
+8220," Colleges, Universities No1.6041-3","p)(2) (Колледжи, Университеты, Профессиональные Школы, и Младшие Колледжи)"
+8241, Correspondence Schools No1.6041-3,"p)(2) (Школы, Корреспонденция)"
+8244, Business/Secretarial Schools No1.6041-3,p)(2) (Бизнес и школы секретарей)
+8249, Vocational/Trade Schools No1.6041-3,"p)(2) (Школы, Торговые и Профессионально-технические"
+8299, Educational Services ,Услуги ухода за детьми)
+8351, Child Care Services, Child Care Services
+8398, Charitable and Social Service Organizations – Fundraising No1.6041-3,p)(Организации Благотворительные и Общественные службы)
+8641," Civic, Social, Fraternal Associations No1.6041-3","p)(Ассоциации — Гражданские, Социальные, и Братские)"
+8651, Political Organizations ,Политические Организации)
+8661, Religious Organizations No1.6041-3,p) (Религиозные организации)
+8675, Automobile Associations ,Автомобильные ассоциации)
+8699, Membership Organizations ,"Организации, Членство – нигде ранее не классифицируемые )"
+8734, Testing Laboratories ,Испытательные Лаборатории (не медицинские))
+8911, Architectural/Surveying Services ,"Архитектурные, Инжиниринговые Услуги и Услуги Рассмотрения)"
+8931, Accounting/Bookkeeping Services ,"Бухгалтерский учет, Ревизия, и Бухгалтерские Услуги )"
+8999," Professional Services, Not Elsewhere Class ",Профессиональные Услуги – нигде ранее не классифицируемые)
+9211," Court Costs, Including Alimony and Child Support – Courts of Law No1.6041-3","p)(4) (Судовые Выплаты, включая Алименты и Детскую Поддержку)"
+9222, Fines – Government Administrative Entities No1.6041-3,p)(4) (Штрафы)
+9223, Bail and Bond Payments ,"payment to the surety for the bond, not the actual bond paid to the government agency) (Залог и Платежные Обязательства)"
+9311, Tax Payments – Government Agencies No1.6041-3,p)(4) (Налоговые Платежи)
+9399, Government Services ,Not Elsewhere Classified) No1.6041-3(p)(4) (Правительственные Услуги – нигде ранее не классифицируемые)
+9402, Postal Services – Government Only No1.6041-3,p)(3) (Почтовые Услуги – Правительство Только)
+9405, U.S. Federal Government Agencies or Departments No1.6041-3,p) (Внутриправительственные Закупки -Только Правительство)
+9752, –  Британские Бензозаправочные станции., –  Британские Бензозаправочные станции.
+9950, Intra-Company Purchases No1.6041-3, Intra-Company Purchases No1.6041-3
