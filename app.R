@@ -10,7 +10,7 @@ source("code/load.R")
 # Filter data
 source("code/dq.R")
 
-# Agregate data
+# Aggregate data
 source("code/generate_pos_attributes.R")
 
 # Compute distance based attributes
@@ -26,7 +26,7 @@ source("code/feature_selection.R")
 source("code/model_optimize.R")
 
 # Fit models
-source("code/model.R")
+source("code/model_score.R")
 
 # Average Predictions
 # source("code/average.R")
