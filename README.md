@@ -24,8 +24,8 @@ Accuracy
 ## Considered approaches
 | Idea |  Description | Result |
 | :------------- |:-------------| :-----|
-| points binary classification | 1 - for points near home(work), 0 - for other points | qucikly got near top with it, so chose it as the main approach |
-| point candidates generation | extend dataset with new generated points (as a grid or as cluster centers) | tried cluster centers, it showed slight imporvement |
+| binary classification | 1 - for points near home(work), 0 - for other points | qucikly got near top with it, so chose it as the main approach |
+| point candidates generation | extend dataset with new points (as a grid or as cluster centers) | tried cluster centers, it showed slight imporvement |
 | convolutional networks / autoencoders | treat transaction map as an image | not tried |
 | regression techniques | prediction as a combination of other points | not tried |
 | clusterization | use different MCC-cluster centers as predictions | mediocre results, opted for more prospective classification approach |
