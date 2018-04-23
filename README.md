@@ -1,6 +1,8 @@
 # Raiffeisen Data Cup Contest (2018)
 
-15th place solution (11th on public board). See "app.R"
+15th place solution (11th on public board). 
+
+For code see app.R
 
 ## Problem setting
 Card Transaction data is available for 20,000 bank clients. 
